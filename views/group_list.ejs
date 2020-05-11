@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        .big_porject_group_box {
+            margin: auto;
+            width: 1600px;
+            margin-top: 100px;
+            margin-bottom: 100px;
+            text-align: center;
+        }
+
+        .group_project_box button {
+            padding-left: 10px;
+            padding-right: 10px;
+            height: 30px;
+            background-color: black;
+            color: white;
+            border-radius: 5px;
+            border: black;
+            cursor: pointer;
+        }
+
+        .group_list_chatting_box {
+            position: relative;
+            width: 60%;
+            background-color: #eaeaea;
+            border-radius: 5px;
+            height: 150px;
+            margin: auto;
+            text-align: left;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            cursor: pointer;
+            border: 1px solid #eaeaea;
+            transition: 0.7s all;
+        }
+
+        .group_list_chatting_box:hover {
+            border: 1px solid #219eda;
+            transform: scale(1.02);
+            transition: 0.7s all;
+        }
+
+        .group_list_chatting_box>.project_name {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .big_group_list_chat_box {
+            margin-bottom: 50px;
+        }
+
+        .big_project_box {
+            width: 100%;
+            position: absolute;
+            bottom: 10px;
+            font-size: 15px;
+            display: inline-flex;
+        }
+
+        .project_people_big_box {
+            display: flex;
+            width: 100%;
+        }
+
+        .createdAt_date {
+            display: flex;
+            justify-content: flex-end;
+            width: 30%;
+            float: right;
+            padding-right: 15px;
+        }
+
+        .pr_pm {
+            margin-top: 20px;
+        }
+
+        .pr_pm p {
+            font-size: 25px;
+            font-weight: bold;
+            color: #5a79ea;
+        }
+
+        .big_post_link_box {
+            width: 100%;
+            text-align: center;
+            margin: auto;
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .post_link_box {
+            width: 35px;
+            height: 35px;
+            background-color: black;
+            text-align: center;
+            line-height: 35px;
+            border-radius: 5px;
+            margin-bottom: 50px;
+            margin-left: 5px;
+            margin-right: 5px;
+            cursor: pointer;
+        }
+
+        .post_link_box a {
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <%- include ("header.ejs") %>
+    </header>
+    <div class="big_porject_group_box">
+        <div class="project_group_list_box">
+            <% for(let i=(pageing*10)-10; i<(pageing*10); i++) { 
+                if(i > rows.length -1) {
+                    i++;
+                } else {
+                    let post = rows[i]
+            %>
+            <div class="big_group_list_chat_box" onclick="location.href='/dinnoplus/group/list/<%= post.id %>'">
+                <div class="group_list_chatting_box">
+                    <p class="project_name">프로젝트: <%= post.project_name %></p>
+                    <div class="pr_pm">
+                        <p class="project_leader">PM: <%= post.project_manager_name %></p>
+                    </div>
+                    <div class="big_project_box">
+                        <div class="project_people_big_box">
+                            <p class="project_people">프로젝트 참여 인원:
+                                <%= post.project_attendants %>,
+                            </p>
+                        </div>
+                        <div class="createdAt_date">
+                            <p><%= post.createdAt %></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <%  } 
+            } %>
+
+            <% if(rows.length === 0) { %>
+                <div>
+                    <h1>프로젝트가 없습니다.</h1>
+                </div>
+            <% } %>
+            
+            <div class="big_post_link_box">
+                <% for(let j= 0 ; j < rows.length / 10; j++) { %>
+                <div class="post_link_box" onclick="location.href='/dinnoplus/group/list/page/<%= j + 1 %>'">
+                    <a href="/dinnoplus/group/list/page/<%= j + 1%>"><%= j + 1%></a>
+                    <!-- rows.length = 15라고 가정하면 / 10 값은 1거기에 + 1 하면 2, 한페이지에 10넘으면 무조건 더 생기게하는 -->
+                </div>
+                <% } %>
+            </div>
+
+            <div class="group_project_box">
+                <a href="/dinnoplus/group/lists/create_project"><button>프로젝트 그룹 만들기</button></a>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    const big_big_group_list_chat_box = document.querySelectorAll(".project_group_list_box .big_group_list_chat_box");
+
+    for(let i = 0; i < big_big_group_list_chat_box.length; i++) {
+        big_big_group_list_chat_box[i].addEventListener('click', () => {
+            
+        })
+    }
+
+</script>
+
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .login_table_box {
+            width: 100%;
+            margin: auto;
+            text-align: center;
+            margin-top: 150px;
+        }
+
+        .login_table_box form>input {
+            width: 600px;
+            height: 30px;
+            border-radius: 5px;
+            border: 1px solid #cccccc;
+            padding-left: 10px;
+            margin-top: 15px;
+        }
+
+        .login_submit_box>input {
+            margin-top: 15px;
+            width: 600px;
+            height: 35px;
+            background-color: black;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .social_submit_box>div a {
+            text-decoration: none;
+            color: white;
+        }
+
+        .social_submit_box div {
+            width: 600px;
+            height: 35px;
+            background-color: #3b5998;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: auto;
+            margin-top: 10px;
+            color: white;
+            line-height: 35px;
+        }
+
+        .social_submit_box_v2>div a {
+            text-decoration: none;
+            color: white;
+        }
+
+        .social_submit_box_v2 div {
+            width: 600px;
+            height: 35px;
+            background-color: #e8d833;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: auto;
+            margin-top: 10px;
+            color: white;
+            line-height: 35px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <%- include ("header.ejs") %>
+    </header>
+    <div class="login_table_box">
+        <div class="login_title_box">
+            <h1>로그인</h1>
+        </div>
+        <form action="/dinnoplus/user/login" method="POST">
+            <input type="text" name="userId" placeholder="아이디" required> <!-- req.body.userId를 하려면 userId라고 해야함-->
+            <br>
+            <input type="password" name="password" placeholder="비밀번호" required>
+            <br>
+            <div class="login_submit_box">
+                <input type="submit" value="로그인">
+            </div>
+        </form>
+        <div class="social_submit_box">
+            <a href="/dinnoplus/user/auth/facebook" class="btn btn-block btn-lg btn-primary btn_login">
+                <div>FaceBook</div>
+            </a>
+        </div>
+        <div class="social_submit_box_v2">
+            <a href="/dinnoplus/user/auth/facebook" class="btn btn-block btn-lg btn-primary btn_login">
+                <div>kakaotalk </div>
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .table_box {
+            margin-bottom: 20px;
+        }
+
+        table {
+            border: 1px solid #ccc;
+            margin: auto;
+            border-collapse: collapse;
+            margin-top: 50px;
+            width: 1100px;
+        }
+
+        table tr th {
+            padding: 25px;
+            border-bottom: 1px solid #ccc;
+            background-color: black;
+            color: white;
+        }
+
+        table tr td {
+            text-align: center;
+            padding: 25px;
+            border-bottom: 1px solid black;
+            cursor: pointer;
+        }
+
+        .gaci_number_box {
+            width: 35px;
+            height: 35px;
+            border-radius: 5px;
+            background-color: black;
+            color: white;
+            text-align: center;
+            line-height: 35px;
+            margin: auto;
+            margin-bottom: 50px;
+            cursor: pointer;
+        }
+
+        .not_gaci_list {
+            text-align: center;
+            font-size: 25px;
+            font-weight: bold;
+            margin-top: 50px;
+        }
+
+        .gaci_title_box {
+            text-align: center;
+            margin-top: 100px
+        }
+
+
+        .big_post_link_box {
+            width: 100%;
+            text-align: center;
+            margin: auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        .post_link_box {
+            width: 35px;
+            height: 35px;
+            background-color: black;
+            text-align: center;
+            line-height: 35px;
+            border-radius: 5px;
+            margin-bottom: 50px;
+            margin-left: 5px;
+            margin-right: 5px;
+            cursor: pointer;
+        }
+
+        .post_link_box a {
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <%- include ("header.ejs") %>
+    </header>
+    <div class="table_box">
+        <div class="gaci_title_box">
+            <h1>공지사항 리스트</h1>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Number</th>
+                    <th>작성자</th>
+                    <th>제목</th>
+                    <th>날짜</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for(let i=(pageing*10)-10; i<(pageing*10); i++) { <!-- pageing가 2일때 2*10-10 = 10, 10이 20보다 작을때 pageing는 계속 변하는 변수이기때문에 클릭한값이 들어가 계속해서 바뀜-->
+                    if(i > rows.length - 1) { <!-- db행 전체는 1부터 시작이지만 for문은 0부터 시작이기때문에 for문이랑 똑같이 하기위해 -1 -->
+                        i++;  <!-- 만약 한페이지에 10개도 안되는 게시물이 있을경우에 단순히 1씩 증가하여 반복문 종료 현재 데이터가 전체보다 크면 i값 늘려 종료-->
+                    } else {
+                        let post = rows[i] <!-- 여기에 req.params.id가 들어감 그러므로 let post는 계속해서 바뀌므로 페이징이 가능-->
+                        <!--i값이 아직 전체 데이터보다 작다면 data를 담아서 리스트에 노출 함-->
+                %>
+                    <tr onclick="location.href='/dinnoplus/post/list/detail/<%= post.id %>'"> 
+                        <td><%= i+1 %></td> <!-- post에 계속 pageing값이 바뀌기 때문에 여기에 내용도 바뀜-->
+                        <td><%= post.gaci_user_name %></td>
+                        <td><%= post.gaci_title %></td>
+                        <td><%= post.gaci_date %></td>
+                    </tr>
+                <% } 
+                } %>
+            </tbody>
+        </table>
+    </div>
+    <% if(rows.length === 0) { %>
+    <div class="not_gaci_list">게시글이 존재 하지 않습니다.</div>
+    <%  }  %>
+
+    <div class="big_post_link_box">
+        <% for(let j= 0 ; j < rows.length / 10; j++) { %>
+        <div class="post_link_box" onclick="location.href='/dinnoplus/post/list/<%= j + 1 %>'">
+            <a href="/dinnoplus/post/list/<%= j + 1%>"><%= j + 1%></a>
+            <!-- rows.length = 15라고 가정하면 / 10 값은 1거기에 + 1 하면 2, 한페이지에 10넘으면 무조건 더 생기게하는 -->
+        </div>
+        <% } %>
+    </div>
+
+
+</body>
+
+</html>

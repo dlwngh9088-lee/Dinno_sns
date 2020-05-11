@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        .join_table_box {
+            width: 600px;
+            margin: auto;
+            text-align: center;
+            margin-top: 150px;
+        }
+
+        .join_table_box form>input {
+            width: 600px;
+            height: 30px;
+            border-radius: 5px;
+            border: 1px solid #cccccc;
+            padding-left: 10px;
+            margin-top: 15px;
+        }
+
+        .join_submit_box>input {
+            margin-top: 15px;
+            width: 600px;
+            height: 35px;
+            background-color: black;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .sp_project_box_btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sp_project_box_btn>input {
+            width: 500px;
+            height: 35px;
+            margin-top: 15px;
+            border-radius: 5px;
+            border: 1px solid #cccccc;
+            padding-left: 10px;
+        }
+
+        .sp_project_box_btn button {
+            width: 90px;
+            height: 35px;
+            background-color: black;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .add_btn_box {
+            padding-top: 12px;
+        }
+
+        .minus_box {
+            padding-top: 12px;
+        }
+
+        .ing_id_join {
+            text-align: left;
+            margin-bottom: -20px;
+            color: red;
+        }
+
+        .ing_id_password {
+            text-align: left;
+            margin-bottom: -20px;
+            color: red;
+        }
+
+        .add_project_input_box {
+            text-align: left;
+        }
+
+        .add_project_input_box input {
+            width: 490px;
+            height: 35px;
+            margin-top: 15px;
+            border-radius: 5px;
+            border: 1px solid #cccccc;
+            padding-left: 10px;
+        }
+
+        .input_max_lengthbox {
+            text-align: left;
+            color: red;
+            padding-top:5px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <%- include ("header.ejs") %>
+    </header>
+    <div class="join_table_box">
+        <div class="join_title_box">
+            <h1>회원가입</h1>
+        </div>
+        <form action="/dinnoplus/user/join" method="POST">
+            <input type="text" name="nickname" placeholder="이름을 적어주세요." required>
+            <br />
+            <input type="text" name="userId" placeholder="아이디" required> <!-- req.body.userId를 하려면 userId라고 해야함-->
+            <p class="ing_id_join"><%= ing_Id %></p>
+            <br />
+            <input type="password" name="password" placeholder="비밀번호" class="password_v1" required>
+            <br />
+            <input type="password" name="password_check" placeholder="비밀번호 체크" class="password_check" required>
+            <p class="ing_id_password"><%= password_fail %></p>
+            <br />
+
+            <br />
+            <div class="join_submit_box">
+                <input type="submit" value="회원가입">
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const add_project_input_box_copy_input = document.querySelectorAll(".add_project_input_box input");
+        // let add_values = 1; //숫자를 클릭 비동기에 넣으면 안됨
+
+        // minus_box.addEventListener('click', (e) => {
+        //     e.preventDefault();
+            
+        // })
+
+        // project_btn.addEventListener('click', (e) => {
+        //     e.preventDefault();
+        //     const temp = document.createElement('input');
+        //     add_values++;
+        //     temp.name=`project_input_${add_values}`;
+
+        //     if(add_values <= 6) {
+        //          add_project_input_box.appendChild(temp);
+        //     } else if(add_values >= 6) {
+        //         input_max_lengthbox.innerHTML="최대 5개까지 입니다.";
+        //     }
+        // });
+
+        /*ajax*/
+        const sign_up_submit = document.getElementById("sign_up_submit");
+        sign_up_submit.addEventListener("click", () => {
+            var inputdata = document.forms[0].elements[0].value;
+            sendAjax('http://localhost:8080/ajax_send_email', inputdata)
+        });
+
+        function sendAjax(url, data) {
+            var data = { 'userId': data };
+            data = JSON.stringify(data); //꼭 문자열로 보내야함
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', url);
+            xhr.setRequestHeader('Content-Type', "application/json"); //서버로 보낼때 json 형식으로
+            xhr.send(data);
+            xhr.addEventListener('load', () => {
+                console.log(xhr.responseText);
+            })
+        }
+    </script>
+</body>
+
+</html>

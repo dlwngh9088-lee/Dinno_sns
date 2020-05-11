@@ -1,0 +1,102 @@
+const express = require('express');
+const router = express.Router();
+const path = require('path');
+const db = require('../models'); //models만 불러와도 user테이블을 쓸 수 있음
+const bcrypt = require('bcrypt');
+const passport = require('passport');
+
+//앞에 /dinnplus/user가 있음
+//POST / user-> 데이터가 필요 요청에 헤더 본문 같이 보낼수 있음. 본문에다가 데이터를 넣어서 보냄(id, nickname,password를 보냄)
+
+router.get('/profile', (req, res) => {
+    if (req.user === undefined) {
+        res.render('profile', { logged: false });
+    } else {
+        res.render('profile', {
+            logged: true,
+            username: req.user.nickname,
+            userId: req.user.userId,
+            userpassword: req.user.password
+        });
+    }
+});
+
+router.get('/join', (req, res) => { 
+    if (req.user === undefined) {
+        res.render('join', { logged: false, ing_Id: '', password_fail: '' });
+    } else {
+        res.render('join', { logged: true, ing_Id: '', username: req.user.nickname, password_fail: '' });
+    }
+});
+
+router.post('/join', async (req, res, next) => {
+    try {
+        /* 아이디 찾는부분 */
+        const exUser = await db.User.findOne({ //findOne 하나만 찾는거 아이디가 있나 데이터 findOne 찾아보기
+            where: {
+                userId: req.body.userId, //user table에 id가 userId로 되어있음
+            },
+        });
+
+        const user_password = await req.body.password;
+        const password_check = await req.body.password_check;
+
+        /* 똑같은 아이다가있으면 에러날리는 부분 */
+        if (exUser) { //아이디가 있다면
+            res.render('join', { ing_Id: "이미 존재하는 아이디입니다.", logged: false, username: null, password_fail: '' });
+        } else if (user_password !== password_check) { //비밀번호가 틀리다면
+            res.render('join', {
+                password_fail: "비밀번호가 일치하지 않습니다.",
+                ing_Id: '',
+                logged: false,
+                username: null
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(req.body.password, 12); // 숫자가 클수록 비밀번호 해킹하기가 힘들지만 보통 1-~13사이
+        /* 똑같은 아이디가 없고 비밀번호가 일치하다면 새로운 유저 만드는 부분 */
+        if (!exUser && user_password === password_check) { // and 연산 둘다 맞아야함
+            db.User.create({ //user 생성(db저장)
+                nickname: req.body.nickname, //client data 받기
+                userId: req.body.userId,
+                password: hashedPassword,
+            });
+            // res.json(newUser)//프론트 보내기 *200-> 성공을 뜻*
+            return res.status(200).redirect('/dinnoplus/user/login');
+        }
+    } catch (e) {
+        console.error(e); //에러처리 여기서
+        return next(e); //error 매개변수
+    }
+});
+
+router.get('/logout', (req, res) => { //로그아웃
+    req.logOut();
+    req.session.destroy();
+    res.redirect('/');
+});
+
+router.get('/login', (req, res) => {
+    if (req.user === undefined) {
+        res.render('login', { logged: false });
+    } else {
+        res.render('login', { logged: true, username: req.user.nickname });
+    }
+});
+
+router.post('/login', passport.authenticate('local', {
+    successRedirect: '/', //성공하면
+    failureRedirect: '/dinnoplus/user/login' //실패하면
+}));
+
+// facebook 로그인
+router.get('/auth/facebook', passport.authenticate('facebook', {
+    authType: 'rerequest', scope: ['public_profile', 'email'] //authType request는 매번 로그인 할 때마다 뒤에 pubic_profiel과 email 달라고 여청
+}));
+
+router.get('/auth/facebook/callback', passport.authenticate('facebook', {
+    successRedirect: '/',
+    failureRedirect: '/login'
+}));
+
+module.exports = router;

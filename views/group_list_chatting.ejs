@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="/socket.io/socket.io.js"></script> <!-- socket.io를 사용하기 위해 반드시 필요함 -->
+    <style>
+        .chat_log {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #dddddd;
+            border-radius: 5px;
+            overflow-y: scroll;
+            margin-bottom: 20px;
+        }
+
+        .name {
+            width: 10%;
+        }
+
+        .message {
+            width: 75%;
+        }
+
+        .chat {
+            width: 12%;
+        }
+
+        .big_chat_box {
+            width: 1600px;
+            margin: auto;
+            margin-top: 100px;
+        }
+
+        .big_chat_box>div>textarea {
+            width: 100%;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            height: 500px;
+            border-radius: 5px;
+            border: 1px solid #cccccc;
+            resize: none;
+        }
+
+        #chat input {
+            border-radius: 5px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            padding-left: 5px;
+            padding-right: 5px;
+            border: 1px solid #cccccc;
+        }
+
+        .headLine_box {
+            text-align: center;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        .headLine_box:nth-child(2) {
+            width: 100%;
+        }
+
+        .msgBox {
+            border: 1px solid #e7e600;
+            background: #e7e600;
+            padding: 2px 10px;
+            border-radius: 5px;
+        }
+
+        .msgLine {
+            margin: 15px;
+        }
+
+        .me {
+            padding: 2px 10px;
+            border-radius: 5px;
+            background-color: #3b5998;
+            color: white;
+        }
+
+        .join_room_box {
+            text-align: center;
+            padding: 5px 10px;
+            background-color: antiquewhite;
+        }
+
+        .leave_room_box {
+            text-align: center;
+            padding: 5px 10px;
+            background-color: paleturquoise;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <%- include ("header.ejs") %>
+    </header>
+    <div class="big_chat_box">
+        <div class="headLine_box">
+            <h1>방 제목 : <%= project_create.project_name %></h1>
+            <h1>현재 참여자: <b class="now_people"></b> </h1>
+        </div>
+        <div>
+            <div id="chatLog" class="chat_log" readonly>
+
+            </div>
+        </div>
+        <form id="chat">
+            <input id="name" class="name" type="text" value="<%=username%>" readonly>
+            <input id="message" class="message" type="text">
+            <input type="submit" class="chat" value="chat" />
+        </form>
+        <button id="get_out">방나가기</button>
+    </div>
+
+    <div id="result"></div>
+    <script>
+        const socket = io(); // socket.io를 사용하기 위한 socket을 변수로 사용
+        const in_name = document.getElementById('name');
+        const message = document.getElementById('message');
+        const chatLog = document.getElementById('chatLog');
+        const chatlong_box = document.getElementById('chatlong_box');
+        const box = document.getElementById('box');
+        const select = document.getElementById("select");
+        const get_out = document.getElementById("get_out");
+        const data_id = document.querySelector(".data_id");
+        const now_people = document.querySelector(".now_people");
+
+        let num = <%- JSON.stringify(project_create.id) %>; //숫자는 비동기에 넣으면 안됨 *방번호를 알 수있는 번호*
+
+        socket.emit('joinRoom', num, in_name.value); //처음 방에 입장할때
+
+        get_out.addEventListener('click', () => { //방나가기 기능
+            location.href = "/dinnoplus/group/list"
+            socket.emit('leaveRoom', num, in_name.value);
+        })
+
+        document.getElementById('chat').addEventListener('submit', (e) => {
+            socket.emit('send message', num, in_name.value, message.value); //socket.on("send message")에 name과 message의 value값을 서버에 보냄
+
+            const msgLine = document.createElement('div');
+            const msgBox = document.createElement('div');
+
+            msgLine.className = "msgLine";
+            msgBox.className = "me";
+            msgBox.style.display = "inline-block";
+            msgLine.style.textAlign = "right";
+
+            msgBox.append(message.value);
+            msgLine.append(msgBox);
+            chatLog.append(msgLine);
+
+            message.value = ''; //보낸후 inout창 지우기
+            chatLog.scrollTop = chatLog.scrollHeight;
+            message.focus();  // 지운후 foucs
+            e.preventDefault(); //form이여서 이벤트 막기
+        });
+
+        socket.on('connect', () => { //접속 되었을 때 실행
+            socket.emit('newUser', in_name.value); //newuser에게 이름 정보를 보내줌
+        });
+
+        socket.on('joinRoom', (num, name) => {
+            const join_box = document.createElement('div');
+            join_box.className = 'join_room_box';
+            join_box.append(name + '님이 들어오셨습니다.');
+            now_people.append(name);
+            chatLog.append(join_box);
+        });
+
+        socket.on('leaveRoom', (num, name) => {
+            const leave_box = document.createElement('div');
+            leave_box.className = 'leave_room_box';
+            chatLog.append(leave_box); //change이벤트 발생만 leave이벤트가 발생
+        })
+
+        socket.on('receive message', (msg) => { //매개변수로 서버에서 데이터를 받느냐 보내느냐를 할 수 있음 *메세지*
+            const msgLine = document.createElement('div');
+            const msgBox = document.createElement('div');
+            msgLine.className = "msgLine";
+            msgBox.className = "msgBox";
+
+            msgBox.append(msg);
+            msgBox.style.display = "inline-block";
+
+            msgLine.append(msgBox);
+            chatLog.append(msgLine); //추가 될때마다 줄바꿈
+            chatLog.scrollTop = chatLog.scrollHeight; //계속해서 따라 다니기
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .table_box {
+            margin-bottom: 20px;
+        }
+
+        table {
+            border: 1px solid #ccc;
+            margin: auto;
+            border-collapse: collapse;
+            margin-top: 50px;
+            width: 1100px;
+        }
+
+        table tr th {
+            padding: 25px;
+            border-bottom: 1px solid #ccc;
+            background-color: black;
+            color: white;
+        }
+
+        table tr td {
+            text-align: center;
+            padding: 25px;
+            border-bottom: 1px solid black;
+            cursor: pointer;
+        }
+
+        .gaci_number_box {
+            width: 35px;
+            height: 35px;
+            border-radius: 5px;
+            background-color: black;
+            color: white;
+            text-align: center;
+            line-height: 35px;
+            margin: auto;
+            margin-bottom: 50px;
+            cursor: pointer;
+        }
+
+        .not_gaci_list {
+            text-align: center;
+            font-size: 25px;
+            font-weight: bold;
+            margin-top: 50px;
+        }
+
+        .gaci_title_box {
+            text-align: center;
+            margin-top: 100px
+        }
+
+        .table_box table button {
+            width: 70px;
+            height: 40px;
+            background-color: black;
+            border: black;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .not_writing_text {
+            text-align: center;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <%- include ("header.ejs") %>
+    </header>
+    <div class="table_box">
+        <div class="gaci_title_box">
+            <h1>내가 쓴글</h1>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Number</th>
+                    <th>작성자</th>
+                    <th>제목</th>
+                    <th>날짜</th>
+                    <th>수정</th>
+                    <th>삭제</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for(let post of rows) { %>
+                <tr>
+                    <td><%= post.id %></td>
+                    <td><%= post.gaci_user_name %></td>
+                    <td><%= post.gaci_title %></td>
+                    <td><%= post.gaci_date %></td>
+                    <td>
+                        <a href="/dinnoplus/post/in_my_writing/<%= post.id %>">
+                            <button>수정</button>
+                        </a>
+                    </td>
+
+                    <td>
+                        <form action="/dinnoplus/post/in_my_writing/<%= post.id %>?_method=DELETE" method="POST">
+                            <button>삭제</button>
+                        </form>
+                    </td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
+
+        <% if(rows.length === 0) { %>
+        <div class="not_writing_text">
+            <h1>쓰신 글이 없습니다.</h1>
+        </div>
+        <% } %>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .post_detail_box {
+            width: 1100px;
+            margin: auto;
+            margin-top: 150px;
+        }
+
+        .post_detail_title_box {
+            border-bottom: 1px solid #cccccc;
+            border-top: 1px solid #cccccc;
+            padding-bottom: 10px;
+            padding-top: 10px;
+            display: flex;
+        }
+
+        .post_detail_title_box>p:first-child {
+            width: 100%;
+            display: flex;
+        }
+
+        .post_detail_title_box>p:nth-child(2) {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .name_text_box {
+            text-align: left;
+            width: 100%;
+        }
+
+        .post_writing {
+            padding-bottom: 10px;
+        }
+
+        .post_detail_box p {
+            font-weight: 600;
+            font-size: 16.5px;
+        }
+
+        .post_contents_box {
+            width: 100%;
+            padding-top: 10px;
+            border-bottom: 1px solid #cccccc;
+            padding-bottom: 10px;
+        }
+
+        .post_contents_box textarea {
+            width: 100%;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            padding-left: 5px;
+            padding-right: 5px;
+            padding-top: 5px;
+            resize: none;
+        }
+
+        .post_contents_box p {
+            font-weight: 500;
+        }
+
+        .post_file_box {
+            margin-top: 10px;
+        }
+
+        .comment_text_box {
+            padding-top: 10px;
+            text-align: right;
+            margin-bottom: 100px;
+        }
+
+        .comment_gaci_textarea_box {
+            width: 100%;
+        }
+
+        .comment_gaci_textarea_box textarea {
+            resize: none;
+            width: 100%;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            padding-top: 5px;
+            padding-left: 10px;
+            padding-right: 10px;
+
+        }
+
+        .comment_btn_box {
+            width: 100%;
+            padding-left: 10px;
+            padding-right: 10px;
+
+        }
+
+        .comment_btn_box input {
+            float: right;
+            width: 70px;
+            height: 30px;
+            background-color: black;
+            color: white;
+            border-radius: 5px;
+            border: black;
+        }
+
+        .list_comments_real_box {
+            width: 100%;
+            height: 100px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            margin: auto;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            text-align: left;
+            margin-top: 50px;
+            position: relative;
+        }
+
+        .user_nickname_writing {
+            font-weight: bold;
+            position: absolute;
+            bottom: 10px;
+        }
+
+        .comment_rows_box {
+            text-align: left;
+            padding-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <%- include ("header.ejs") %>
+    </header>
+
+    <div class="post_detail_box">
+        <div class="post_writing">
+            <p class="name_text_box"><span>작성자 : </span><%= detail_result.gaci_user_name %></p>
+        </div>
+        <div class="post_detail_title_box">
+            <p>제목 : <%= detail_result.gaci_title %></p>
+            <p>날짜 : <%= detail_result.gaci_date %></p>
+        </div>
+        <div class="post_contents_box">
+            <textarea name="" id="" cols="30" rows="35" readonly><%= detail_result.gaci_contents %></textarea>
+        </div>
+        <div class="comment_text_box">
+            <form action="/dinnoplus/post/list/detail/<%= detail_result.id %>" method="POST">
+                <div class="comment_gaci_textarea_box">
+                    <textarea name="notice_content" id="" cols="30" rows="10" placeholder="댓글을 입력해주세요."
+                        required></textarea>
+                </div>
+                <div class="comment_btn_box">
+                    <input type="submit" value="댓글 등록">
+                </div>
+            </form>
+            <div class="comment_rows_box">
+                <p>댓글 총 <%= comments_rows.length %></p>
+            </div>
+            <% for(let post of comments_rows) { %>
+            <div class="list_gaics_box">
+                <div class="list_comments_real_box">
+                    <%= post.notice_content %>
+                    <div class="user_nickname_writing">
+                        <p>작성자: <%= post.notice_contents_user_name %></p>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+        </div>
+    </div>
+</body>
+
+</html>

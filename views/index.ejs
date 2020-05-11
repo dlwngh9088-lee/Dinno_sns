@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .main_gaci_section_box {
+            width: 1400px;
+            margin: auto;
+            margin-top: 50px;
+        }
+
+        .main_gaci_box {
+            text-align: center;
+            width: 100%;
+        }
+
+        .main_gaci_section_box textarea {
+            width: 70%;
+            margin: auto;
+            resize: none;
+            border-radius: 5px;
+            border: 1px solid #cccccc;
+            padding-left: 25px;
+            padding-top: 25px;
+            position: relative;
+        }
+
+        .main_gaci_box_btn {
+            width: 70%;
+            margin: auto;
+            padding-left: 25px;
+            text-align: left;
+        }
+
+        .main_gaci_box_btn button {
+            float: right;
+            width: 70px;
+            height: 30px;
+            background-color: black;
+            color: white;
+            border-radius: 5px;
+            border: black;
+        }
+
+        .radious_nickname_box {
+            width: 50px;
+            height: 50px;
+            border-radius: 50px;
+            background-color: #cccccc;
+            position: absolute;
+            z-index: 9999;
+            margin-left: -35px;
+            margin-top: -25px;
+        }
+
+        .radious_nickname_box h3 {
+            color: white;
+            font-size: 35px;
+            line-height: 50px;
+        }
+
+        .radious_big_box {
+            width: 70%;
+            margin: auto;
+        }
+
+        .main_gaci_box {
+            margin-top: 100px;
+            margin-bottom: 100px;
+        }
+
+        .main_gaci_box .list_boxs {
+            width: 70%;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            height: 100px;
+            margin: auto;
+            margin-top: 70px;
+            text-align: left;
+            padding-left: 25px;
+            padding-top: 25px;
+        }
+
+        .main_gaci_list_box_btn {
+            width: 70%;
+            margin: auto;
+            padding-left: 25px;
+            margin-top: 5px;
+        }
+
+        .main_gaci_list_box_btn button {
+            float: right;
+            width: 70px;
+            height: 30px;
+            background-color: black;
+            color: white;
+            border-radius: 5px;
+            border: black;
+        }
+
+        .comments_box {
+            margin-top: 10px;
+        }
+
+        .comments_real_box {
+            width: 70%;
+            height: 100px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            margin: auto;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            text-align: left;
+            margin-top: 10px;
+        }
+
+        .big_comments_box {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <%- include ("header.ejs") %>
+    </header>
+
+    <div class="main_gaci_section_box">
+        <div class="main_gaci_box">
+            <form action="/" method="POST">
+                <div class="radious_big_box">
+                    <div class="radious_nickname_box">
+                        <h3><%= username[0] %></h3>
+                    </div>
+                </div>
+                <textarea name="Main_gaci_contents" id="" cols="30" rows="10" placeholder="글을 작성해주세요."
+                    required></textarea>
+
+                <div class="main_gaci_box_btn">
+                    <button>글 등록</button>
+                    <p>총 <%= rows.length %> 게시물</p>
+                </div>
+            </form>
+            <div class="main_gaci_box">
+                <% for(let post of rows) { %>
+                <div>
+                    <div class="radious_big_box">
+                        <div class="radious_nickname_box">
+                            <h3><%= post.Main_gaci_contents_user_name[0] %></h3>
+                        </div>
+                    </div>
+                    <div class="list_boxs" readonly>
+                        <%= post.Main_gaci_contents %>
+                    </div>
+
+                    <div class="comments_box">
+                        <form action="/<%= post.id %>" method="POST">
+                            <textarea name="content" cols="30" rows="5" placeholder="댓글을 입력해주세요." required></textarea>
+                            <div class="main_gaci_list_box_btn">
+                                <button>댓글 등록</button>
+                            </div>
+                            <div class="big_comments_box">
+                                <% for (let comment of comment_main_gacis) { %>
+                                <div class="comments_real_box">
+                                    <%= comment.content %>
+                                </div>
+                                <% } %>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <% } %>
+
+
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    const main_gaci_box_btn_btn = document.querySelector(".main_gaci_box_btn button");
+    main_gaci_box_btn_btn.addEventListener('click', () => {
+
+    });
+
+    function click_import() {
+
+    }
+
+</script>
+
+</html>

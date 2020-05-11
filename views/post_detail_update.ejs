@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .post_detail_box {
+            width: 1100px;
+            margin: auto;
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        .post_detail_box form>input {
+            width: 1100px;
+            height: 30px;
+            border-radius: 5px;
+            border: 1px solid #cccccc;
+            padding-left: 10px;
+            margin-top: 15px;
+        }
+
+        .post_detail_box form>textarea {
+            width: 1100px;
+            border-radius: 5px;
+            border: 1px solid #cccccc;
+            padding-left: 10px;
+            margin-top: 15px;
+            resize: none;
+            padding-top: 10px
+        }
+
+        .gaic_input_submit_box input {
+            margin-top: 15px;
+            width: 1100px;
+            height: 35px;
+            background-color: black;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .post_file_box {
+            text-align: left;
+            padding-top: 10px;
+        }
+
+        .update_btn_box {
+            padding-top: 10px
+        }
+
+        .update_btn_box input {
+            width: 75px;
+            height: 30px;
+            background-color: black;
+            border: black;
+            color: white;
+            float: right;
+            border-radius: 5px;
+        }
+
+        
+        .post_detail_box textarea {
+            width: 100%;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            padding-left: 5px;
+            padding-right: 5px;
+            padding-top: 5px;
+            resize: none;
+            margin-top: 10px
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <%- include ("header.ejs") %>
+    </header>
+    <div class="post_detail_box">
+        <form action="/dinnoplus/post/in_my_writing/update/<%= rows.id %>" method="POST">
+            <input type="text" name="gaci_title" value="<%= rows.gaci_title %>" required>
+            <br />
+            <input type="text" name="gaci_user_name" value="<%= rows.gaci_user_name %>" readonly />
+            <br />
+            <input type="text" name="gaci_date" class="gaci_date" readonly />
+            <br />
+            <div class="post_contents_box">
+                <textarea name="gaci_contents" id="" cols="30" rows="35"><%= rows.gaci_contents %></textarea>
+            </div>
+            <div class="update_btn_box">
+                <input type="submit" value="수정">
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+    const gaci_date = document.querySelector(".gaci_date");
+    function input_date() {
+        let date = new Date();
+        const year = date.getFullYear();
+        const month = new String(date.getMonth() + 1);
+        const day = new String(date.getDate());
+        const hour = date.getHours();
+        const minute = date.getMinutes();
+        const second = date.getSeconds();
+        const text_Input_date = year + "년" + month + "월" + day + "일" + hour + "시" + minute + "분" + second + "초";
+        gaci_date.value = text_Input_date;
+    }
+
+    input_date();
+
+    setInterval(() => {
+        input_date();
+    }, 1000);
+
+</script>
+</html>
