@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../models');
 const path = require("path");
+const index_room = require('../index'); //배열에 group만큼의 수를 넣게 만들기 위해
 
 router.get('/list', async (req, res) => { //그룹 리스트
     const pageing = 1;
@@ -27,6 +28,9 @@ router.get('/list', async (req, res) => { //그룹 리스트
 });
 
 router.get('/list/:id',  async (req, res) => {
+    if(!req.user) {
+        return res.redirect('/');
+    }
     let group_list_id = await req.params.id;
     const project_create = await db.Group_list_gaci.findOne({
         where: {
@@ -34,20 +38,27 @@ router.get('/list/:id',  async (req, res) => {
         }
     });
 
+    const project_user = await db.Group_list_gaci.findAll({});
+
+    for(let i = 0; i < project_user.length; i++) {
+        index_room.room.push(i); //데이터베이스 갯수만큼 넣기
+    }
+
     if (req.user === undefined) {
         res.render('group_list_chatting', {
             logged: false,
             username: '',
             project_create: '',
+            project_user: '',
         });
     } else {
         res.render('group_list_chatting', {
             logged: true,
             username: req.user.nickname,
             project_create: project_create,
+            project_user: project_user,
         });
     }
-    return res.json(project_create);
 });
 
 router.get('/list/page/:id', async (req, res) => { //페이징
@@ -78,6 +89,9 @@ router.get('/list/page/:id', async (req, res) => { //페이징
 });
 
 router.get('/lists/create_project', async (req, res) => {
+    if(!req.user) {
+        return res.redirect('/');
+    }
     const user_list_all = await db.User.findAll({})
     if (req.user === undefined) {
         res.render('group_list_create', {
@@ -100,11 +114,19 @@ router.post('/list/project_create', async (req, res, next) => {
             project_name: req.body.project_name,
             project_manager_name: req.body.project_manager_name,
             project_password: req.body.project_password,
-            project_attendants: req.body.project_attendants,
+            project_attendants_1: req.body.project_attendants_1,
+            project_attendants_2: req.body.project_attendants_2,
+            project_attendants_3: req.body.project_attendants_3,
+            project_attendants_4: req.body.project_attendants_4,
+            project_attendants_5: req.body.project_attendants_5,
+            project_attendants_6: req.body.project_attendants_6,
+            project_attendants_7: req.body.project_attendants_7,
+            project_attendants_8: req.body.project_attendants_8,
         });
-
+        
         res.status(200).redirect('/dinnoplus/group/list')
         return res.json(project_create);
+
     } catch (e) {
         console.error(e);
         next(e);

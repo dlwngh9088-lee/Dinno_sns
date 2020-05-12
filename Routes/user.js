@@ -8,20 +8,88 @@ const passport = require('passport');
 //앞에 /dinnplus/user가 있음
 //POST / user-> 데이터가 필요 요청에 헤더 본문 같이 보낼수 있음. 본문에다가 데이터를 넣어서 보냄(id, nickname,password를 보냄)
 
-router.get('/profile', (req, res) => {
-    if (req.user === undefined) {
-        res.render('profile', { logged: false });
-    } else {
-        res.render('profile', {
-            logged: true,
-            username: req.user.nickname,
-            userId: req.user.userId,
-            userpassword: req.user.password
+router.get('/profile', async (req, res, next) => {
+    try {
+        if (!req.user) {
+            return res.redirect('/');
+        }
+
+        const main_post = await db.Main_gaci.findAll({
+            order: [['createdAt', 'DESC']],
+            where: {
+                Main_gaci_contents_user_name: req.user.nickname, //자기 닉네임이랑 일치하는 메인 게시물 찾기
+            }
         });
+
+        const profile_comment = await db.Comment.findAll({
+            order: [['createdAt', 'DESC']],
+            include: [{
+                model: db.User,
+                attributes: ['id', 'nickname']
+            }]
+        })
+
+        if (req.user === undefined) {
+            res.render('profile', {
+                logged: false,
+                username: '',
+                rows: '',
+                comment: '',
+            })
+        } else {
+            res.render('profile', {
+                logged: true,
+                username: req.user.nickname,
+                rows: main_post,
+                comment: profile_comment,
+            });
+        }
+    } catch (e) {
+        console.error(e);
+        next(e);
     }
 });
 
-router.get('/join', (req, res) => { 
+router.post('/profile/:id', async (req, res, next) => { //삭제
+    try {
+        let destroy_id = req.params.id;
+
+        const profile_gaci = await db.Main_gaci.destroy({
+            where: {
+                id: destroy_id
+            }
+        });
+
+        if (profile_gaci) {
+            res.status(200).redirect('/dinnoplus/user/profile')
+        }
+
+    } catch (e) {
+        console.error(e);
+        next(e);
+    }
+})
+
+router.post('/change_nickname', async (req, res, next) => {
+    try {
+        const name_upadte = await db.User.update({
+            nickname: req.body.change_name
+        }, {
+            where: {
+                id: 3,
+            }
+        });
+
+        if (name_upadte) {
+            res.redirect('/dinnoplus/user/profile');
+        }
+    } catch (e) {
+        console.error(e);
+        next(e);
+    }
+})
+
+router.get('/join', (req, res) => {
     if (req.user === undefined) {
         res.render('join', { logged: false, ing_Id: '', password_fail: '' });
     } else {

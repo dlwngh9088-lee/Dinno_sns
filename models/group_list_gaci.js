@@ -13,10 +13,38 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(50),
             allowNull: false,
         },
-        project_attendants: {
+        project_attendants_1: {
             type: DataTypes.STRING(30),
             allowNull: false,
         },
+        project_attendants_2: {
+            type: DataTypes.STRING(30),
+            allowNull: true,
+        },
+        project_attendants_3: {
+            type: DataTypes.STRING(30),
+            allowNull: true,
+        },
+        project_attendants_4: {
+            type: DataTypes.STRING(30),
+            allowNull: true,
+        },
+        project_attendants_5: {
+            type: DataTypes.STRING(30),
+            allowNull: true,
+        },
+        project_attendants_6: {
+            type: DataTypes.STRING(30),
+            allowNull: true,
+        },
+        project_attendants_7: {
+            type: DataTypes.STRING(30),
+            allowNull: true,
+        },
+        project_attendants_8: {
+            type: DataTypes.STRING(30),
+            allowNull: true,
+        }
     }, {
         charset: 'utf8mb4', //한글 + 이모티콘 게시글에 이모티콘이 달릴 수 있기 떄문에
         collate: 'utf8mb4_general_ci', //이모티콘때문에

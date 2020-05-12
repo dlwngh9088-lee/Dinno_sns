@@ -27,7 +27,7 @@
             margin-top: 15px;
             width: 600px;
             height: 35px;
-            background-color: black;
+            background-color: #4169E1;
             color: white;
             border: none;
             border-radius: 5px;
@@ -92,12 +92,6 @@
             border: 1px solid #cccccc;
             padding-left: 10px;
         }
-
-        .input_max_lengthbox {
-            text-align: left;
-            color: red;
-            padding-top:5px;
-        }
     </style>
 </head>
 
@@ -130,25 +124,6 @@
 
     <script>
         const add_project_input_box_copy_input = document.querySelectorAll(".add_project_input_box input");
-        // let add_values = 1; //숫자를 클릭 비동기에 넣으면 안됨
-
-        // minus_box.addEventListener('click', (e) => {
-        //     e.preventDefault();
-            
-        // })
-
-        // project_btn.addEventListener('click', (e) => {
-        //     e.preventDefault();
-        //     const temp = document.createElement('input');
-        //     add_values++;
-        //     temp.name=`project_input_${add_values}`;
-
-        //     if(add_values <= 6) {
-        //          add_project_input_box.appendChild(temp);
-        //     } else if(add_values >= 6) {
-        //         input_max_lengthbox.innerHTML="최대 5개까지 입니다.";
-        //     }
-        // });
 
         /*ajax*/
         const sign_up_submit = document.getElementById("sign_up_submit");

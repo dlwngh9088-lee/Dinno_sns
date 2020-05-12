@@ -19,7 +19,7 @@
             padding-left: 10px;
             padding-right: 10px;
             height: 30px;
-            background-color: black;
+            background-color: #4169E1;
             color: white;
             border-radius: 5px;
             border: black;
@@ -101,7 +101,7 @@
         .post_link_box {
             width: 35px;
             height: 35px;
-            background-color: black;
+            background-color: #4169E1;
             text-align: center;
             line-height: 35px;
             border-radius: 5px;
@@ -113,6 +113,12 @@
 
         .post_link_box a {
             color: white;
+        }
+
+        .project_people span {
+            margin-left: 5px;
+            margin-right: 5px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -138,7 +144,14 @@
                     <div class="big_project_box">
                         <div class="project_people_big_box">
                             <p class="project_people">프로젝트 참여 인원:
-                                <%= post.project_attendants %>,
+                                <span><%= post.project_attendants_1 %></span>
+                                <span><%= post.project_attendants_2 %></span>
+                                <span><%= post.project_attendants_3 %></span>
+                                <span><%= post.project_attendants_4 %></span>
+                                <span><%= post.project_attendants_5 %></span>
+                                <span><%= post.project_attendants_6 %></span>
+                                <span><%= post.project_attendants_7 %></span>
+                                <span><%= post.project_attendants_8 %></span>
                             </p>
                         </div>
                         <div class="createdAt_date">
@@ -151,11 +164,11 @@
             } %>
 
             <% if(rows.length === 0) { %>
-                <div>
-                    <h1>프로젝트가 없습니다.</h1>
-                </div>
+            <div>
+                <h1>프로젝트가 없습니다.</h1>
+            </div>
             <% } %>
-            
+
             <div class="big_post_link_box">
                 <% for(let j= 0 ; j < rows.length / 10; j++) { %>
                 <div class="post_link_box" onclick="location.href='/dinnoplus/group/list/page/<%= j + 1 %>'">
@@ -174,9 +187,9 @@
 <script>
     const big_big_group_list_chat_box = document.querySelectorAll(".project_group_list_box .big_group_list_chat_box");
 
-    for(let i = 0; i < big_big_group_list_chat_box.length; i++) {
+    for (let i = 0; i < big_big_group_list_chat_box.length; i++) {
         big_big_group_list_chat_box[i].addEventListener('click', () => {
-            
+
         })
     }
 

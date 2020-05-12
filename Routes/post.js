@@ -183,7 +183,7 @@ router.get('/list/detail/:id', async (req, res, next) => { // 상세 보기
         const list_comment = await db.List_comment.findAll({ //댓글
             order: [['createdAt', 'DESC']],
             where: {
-                GaciId: req.params.id, //넣은 gacild를 req.params.id로 몇번째 게시글인지 댓글을 달음
+                GaciId: post_list_id, //넣은 gacild를 req.params.id로 몇번째 게시글인지 댓글을 달음
             }
         })
 

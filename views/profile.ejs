@@ -6,22 +6,340 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        .profile_gray_box {
-            background-color: #cccccc;
-            width: 500px;
+        #wrap {
+            padding-bottom: 100px;
+        }
+
+        .big_name_box {
+            background-color: rgba(0, 0, 0, 0.6);
+            margin: auto;
+            z-index: 999;
+            width: 1800px;
             height: 500px;
+        }
+
+        .big_name_box h1 {
+            color: white;
+            text-align: center;
+            font-size: 80px;
+            position: absolute;
+            left: 0;
+            right: 0;
+            line-height: 500px;
+        }
+
+        .big_name_box img {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            z-index: -1;
+        }
+
+        .radious_big_box {
+            width: 1600px;
+            margin: auto;
+        }
+
+        .radious_nickname_box {
+            width: 150px;
+            height: 150px;
+            border-radius: 150px;
+            background-color: #4169E1;
+            z-index: 9999;
+            text-align: center;
+        }
+
+        .radious_nickname_box h3 {
+            color: white;
+            font-size: 65px;
+            line-height: 150px;
+        }
+
+        .nickname_change_box {
+            display: flex;
+            align-items: center;
+            position: absolute;
+            margin-top: -75px;
+        }
+
+        .nickname_change_box div input {
+            width: 400px;
+            height: 50px;
+            border-radius: 5px;
+            border: 1px solid #cccccc;
+            padding-left: 10px;
+            margin-left: 20px;
+        }
+
+        .nickname_change_box div button {
+            height: 50px;
+            width: 80px;
+            border-radius: 5px;
+            background-color: #4169E1;
+            color: white;
+            border: none;
+        }
+
+        .my_main_gaci_box {
+            padding-top: 100px;
+            width: 1400px;
+            margin: auto;
+        }
+
+        .big_rows_box {
+            margin-top: 100px
+        }
+
+        .my_radious_nickname_box {
+            width: 80px;
+            height: 80px;
+            border-radius: 50px;
+            background-color: #4169E1;
+            position: absolute;
+            z-index: 9999;
+            margin-left: -35px;
+            margin-top: -35px;
+            text-align: center;
+        }
+
+        .my_radious_nickname_box h3 {
+            color: white;
+            font-size: 40px;
+            line-height: 80px;
+        }
+
+        .my_main_gaci_box textarea {
+            width: 100%;
+            margin: auto;
+            resize: none;
+            border-radius: 5px;
+            border: 1px solid #cccccc;
+            padding-left: 50px;
+            padding-top: 25px;
+            position: relative;
+        }
+
+        .comments_box textarea {
+            width: 100%;
+            margin: auto;
+            resize: none;
+            border-radius: 5px;
+            border: 1px solid #cccccc;
+            padding-left: 50px;
+            padding-top: 25px;
+            position: relative;
+        }
+
+        .comment_button_box {
+            width: 100%;
+            display: flex;
+            text-align: center;
+            line-height: 30px;
+            font-size: 17px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .comment_button_box button {
+            width: 100px;
+            height: 30px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-right: 5px;
+            color: white;
+            border: none;
+        }
+
+        .comment_button_box .update_comment_box {
+            background-color: #00FA9A;
+
+        }
+
+        .comment_button_box .drop_comment_box {
+            background-color: #DC143C;
+
+        }
+
+        .comments_box {
+            margin-top: 40px
+        }
+
+        .comment_radious_box {
+            width: 50px;
+            height: 50px;
+            border-radius: 50px;
+            background-color: #ADD8E6;
+            position: absolute;
+            z-index: 9999;
+            color: white;
+            font-size: 12px;
+            margin-left: -25px;
+            margin-top: -20px;
+            text-align: center;
+            line-height: 50px;
+        }
+
+        .comment_area_box {
+            margin-top: 30px;
+        }
+
+        .bgk_destory_popup_box {
+            background-color: rgba(0, 0, 0, 0.6);
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            z-index: 99999;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: none;
+        }
+
+        .profile_pixed_popup_white_box {
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .popup_destory_white_box {
+            width: 400px;
+            height: 200px;
+            background-color: white;
+            margin: auto;
+            position: relative;
+        }
+
+        .destory_ok_box {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            right: 0;
+        }
+
+        .destory_ok_box button {
+            background-color: #4169E1;
+            width: 150px;
+        }
+
+        .destory_text_box h1 {
+            color: black;
+            font-size: 25px;
+        }
+
+        .destory_text_box {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50px
+        }
+
+        .close_box {
+            color: black;
+            text-align: right;
+            margin-right: 15px;
+            font-size: 20px;
+            padding-top: 5px;
+            cursor: pointer;
+        }
+
+        .close_box:hover {
+            color: #4169E1;
         }
     </style>
 </head>
 
 <body>
-    <header>
-        <%- include ("header.ejs") %>
-    </header>
-    <div class="profile_gray_box">
-        <% if(logged) { %>
-            <p>닉네임: <%= username %></p>
-        <%}%>
+    <div id="wrap">
+        <header>
+            <%- include ("header.ejs") %>
+        </header>
+
+        <div class="big_name_box">
+            <h1><%= username %>님 환영합니다.</h1>
+            <img src="/image/profile_weMain.jpg" alt="profile_main_Image">
+        </div>
+
+        <div class="radious_big_box">
+            <div class="nickname_change_box">
+                <div class="radious_nickname_box">
+                    <h3><%= username[0] %></h3>
+                </div>
+                <div>
+                    <form action="/dinnoplus/user/change_nickname" method="POST">
+                        <input type="text" name="change_name" placeholder="변경할 닉네임을 적어주세요." required>
+                        <button>변경</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="my_main_gaci_box">
+                <% for(let post of rows) { %>
+                <div class="big_rows_box">
+                    <div class="my_radious_big_box">
+                        <div class="my_radious_nickname_box">
+                            <h3><%= username[0] %></h3>
+                        </div>
+                    </div>
+                    <textarea id="" cols="30" rows="10" readonly><%= post.Main_gaci_contents %></textarea>
+                    <div class="comment_button_box">
+                        <button class="update_comment_box">수정</button>
+                        <div class="bgk_destory_popup_box">
+                            <div class="profile_pixed_popup_white_box">
+                                <div class="popup_destory_white_box">
+                                    <div class="big_white_popup_box">
+                                        <div class="close_box">
+                                            <h3>X</h3>
+                                        </div>
+                                        <div class="destory_text_box">
+                                            <h1>정말로 삭제를 하시겠습니까?</h1>
+                                        </div>
+                                        <div class="destory_ok_box">
+                                            <form action="/dinnoplus/user/profile/<%= post.id %>?_method=DELETE"
+                                                method="POST">
+                                                <button>확인</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="drop_comment_box">삭제</button>
+                    </div>
+                </div>
+
+                <div class="comments_box">
+                    <% for(let comments of comment) { %>
+                    <% if(post.id === comments.MainGaciId) { %>
+                    <div class="comment_area_box">
+                        <div class="comment_radious_box">
+                            <h1><%= comments.contents_user_name[0] %></h1>
+                        </div>
+                        <textarea name="" id="" cols="30" rows="5" readonly><%= comments.content %></textarea>
+                    </div>
+                    <% } %>
+                    <% } %>
+                </div>
+                <% } %>
+            </div>
+
+        </div>
     </div>
 </body>
+
+<script>
+    const drop_gaci_box = document.querySelectorAll(".drop_comment_box");
+    const destory_bgk = document.querySelectorAll(".bgk_destory_popup_box");
+    const close_box = document.querySelectorAll(".close_box");
+
+    for (let i = 0; i < drop_gaci_box.length; i++) {
+        drop_gaci_box[i].addEventListener('click', () => {
+            destory_bgk[i].style.display = "table";
+        });
+
+        close_box[i].addEventListener('click', () => {
+            destory_bgk[i].style.display = "none";
+        })
+    }
+</script>
+
 </html>

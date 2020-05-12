@@ -39,7 +39,7 @@
             float: right;
             width: 70px;
             height: 30px;
-            background-color: black;
+            background-color: #4169E1;
             color: white;
             border-radius: 5px;
             border: black;
@@ -49,10 +49,10 @@
             width: 50px;
             height: 50px;
             border-radius: 50px;
-            background-color: #cccccc;
+            background-color: #4169E1;
             position: absolute;
             z-index: 9999;
-            margin-left: -35px;
+            margin-left: -45px;
             margin-top: -25px;
         }
 
@@ -74,14 +74,11 @@
 
         .main_gaci_box .list_boxs {
             width: 70%;
+            padding: 30px 20px 5px;
             border: 1px solid #cccccc;
             border-radius: 5px;
-            height: 100px;
             margin: auto;
-            margin-top: 70px;
             text-align: left;
-            padding-left: 25px;
-            padding-top: 25px;
         }
 
         .main_gaci_list_box_btn {
@@ -95,32 +92,53 @@
             float: right;
             width: 70px;
             height: 30px;
-            background-color: black;
+            background-color: #4169E1;
             color: white;
             border-radius: 5px;
-            border: black;
+            border: #4169E1;
         }
 
         .comments_box {
             margin-top: 10px;
         }
 
-        .comments_real_box {
-            width: 70%;
-            height: 100px;
-            border: 1px solid #cccccc;
-            border-radius: 5px;
-            margin: auto;
-            padding-left: 10px;
-            padding-right: 10px;
-            padding-top: 10px;
-            padding-bottom: 10px;
-            text-align: left;
-            margin-top: 10px;
+        .big_comments_box {
+            width: 100%;
+            padding-top: 40px;
+            /* display: none; */
         }
 
-        .big_comments_box {
-            margin-top: 50px;
+        .contents_area_box {
+            width: 100%;
+            margin: auto;
+            text-align: center;
+            display: flex
+        }
+
+        .contents_big_text_area_box {
+            margin-top: 80px;
+        }
+
+        .comment_radious_box {
+            width: 50px;
+            height: 50px;
+            border-radius: 50px;
+            background-color: #ADD8E6;
+            position: absolute;
+            z-index: 9999;
+            color: white;
+            font-size: 12px;
+            line-height: 50px;
+            margin-left: 175px;
+            margin-top: 20px;
+        }
+
+        .big_comment_area_box {
+            position:relative;
+        }
+
+        .big_comment_area_box textarea {
+            margin-top: 40px;
         }
     </style>
 </head>
@@ -149,49 +167,52 @@
             <div class="main_gaci_box">
                 <% for(let post of rows) { %>
                 <div>
-                    <div class="radious_big_box">
-                        <div class="radious_nickname_box">
-                            <h3><%= post.Main_gaci_contents_user_name[0] %></h3>
+                    <div class="contents_big_text_area_box">
+                        <div class="radious_big_box">
+                            <div class="radious_nickname_box">
+                                <h3><%= post.Main_gaci_contents_user_name[0] %></h3>
+                            </div>
                         </div>
+                        <div class="contents_area_box"><textarea name="" id="" cols="30" rows="10" class="list_boxs"
+                                readonly><%= post.Main_gaci_contents %></textarea></div>
                     </div>
-                    <div class="list_boxs" readonly>
-                        <%= post.Main_gaci_contents %>
-                    </div>
-
                     <div class="comments_box">
-                        <form action="/<%= post.id %>" method="POST">
-                            <textarea name="content" cols="30" rows="5" placeholder="댓글을 입력해주세요." required></textarea>
+                        <form action="/<%= post.id %>/comment" method="POST">
                             <div class="main_gaci_list_box_btn">
                                 <button>댓글 등록</button>
                             </div>
                             <div class="big_comments_box">
+                                <textarea name="content" cols="30" rows="5" placeholder="댓글을 입력해주세요."
+                                    required></textarea>
                                 <% for (let comment of comment_main_gacis) { %>
-                                <div class="comments_real_box">
-                                    <%= comment.content %>
+                                    <% if(post.id === comment.MainGaciId) { %> <!-- post.id랑 게시글에 mainGaciId랑 일치하는 게시글만 출력 mainGaciId랑=>게시글의 post번호-->
+                                        <div class="big_comment_area_box">
+                                            <div class="comment_radious_box">
+                                            <h1><%= comment.contents_user_name[0] %></h1>
+                                        </div>
+                                        <textarea cols="30" rows="5" class="comments_real_box"
+                                            readonly><%= comment.content %></textarea>
+                                    <% } %>
+                                <% }%>
                                 </div>
-                                <% } %>
                             </div>
                         </form>
                     </div>
                 </div>
                 <% } %>
-
-
             </div>
         </div>
     </div>
 </body>
 
 <script>
-    const main_gaci_box_btn_btn = document.querySelector(".main_gaci_box_btn button");
-    main_gaci_box_btn_btn.addEventListener('click', () => {
+    const big_comments_box = document.querySelectorAll(".big_comments_box");
+    const main_gaci_list_box_btn = document.querySelectorAll(".main_gaci_list_box_btn button");
 
-    });
-
-    function click_import() {
-
+    for (let i = 0; i < main_gaci_list_box_btn.length; i++) {
+        main_gaci_list_box_btn[i].addEventListener('click', (e) => {
+            big_comments_box[i].style.display = "block";
+        });
     }
-
 </script>
-
 </html>

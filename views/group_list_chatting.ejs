@@ -94,6 +94,35 @@
             padding: 5px 10px;
             background-color: paleturquoise;
         }
+
+        .big_userlist_box {
+            position: absolute;
+            right: 0;
+            margin-right: 100px;
+        }
+
+        .user_list_box {
+            border: 1px solid #dddddd;
+            padding-left: 10px;
+            padding-right: 10px;
+            overflow-y: scroll;
+            height: 300px;
+            padding-bottom: 10px;
+            position: relative;
+        }
+
+        .user_small_box {
+            width: 80px;
+            height: 80px;
+            background-color: #4169E1;
+            color: white;
+            text-align: center;
+            border-radius: 100px;
+            font-size: 12px;
+            line-height: 80px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
     </style>
 </head>
 
@@ -105,6 +134,19 @@
         <div class="headLine_box">
             <h1>방 제목 : <%= project_create.project_name %></h1>
             <h1>현재 참여자: <b class="now_people"></b> </h1>
+        </div>
+        <div class="big_people_List">
+            <div class="big_userlist_box">
+                <h3>참여 인원 리스트</h3>
+                <div class="user_list_box">
+                    <% for(let user of project_user) { %>
+                    <div class="box_bgk"></div>
+                    <div class="user_small_box">
+                        <%= user.project_attendants_1  %> <!-- 수정 해야함-->
+                    </div>
+                    <% } %>
+                </div>
+            </div>
         </div>
         <div>
             <div id="chatLog" class="chat_log" readonly>
@@ -118,6 +160,7 @@
         </form>
         <button id="get_out">방나가기</button>
     </div>
+
 
     <div id="result"></div>
     <script>
@@ -135,6 +178,7 @@
         let num = <%- JSON.stringify(project_create.id) %>; //숫자는 비동기에 넣으면 안됨 *방번호를 알 수있는 번호*
 
         socket.emit('joinRoom', num, in_name.value); //처음 방에 입장할때
+        socket.emit('leave_dis', num);
 
         get_out.addEventListener('click', () => { //방나가기 기능
             location.href = "/dinnoplus/group/list"
@@ -144,22 +188,26 @@
         document.getElementById('chat').addEventListener('submit', (e) => {
             socket.emit('send message', num, in_name.value, message.value); //socket.on("send message")에 name과 message의 value값을 서버에 보냄
 
-            const msgLine = document.createElement('div');
-            const msgBox = document.createElement('div');
+            if (message.value === '') {
+                return e.preventDefault(); //보낼때 메세지가 비워져있으면 작동 중지
+            } else {
+                const msgLine = document.createElement('div');
+                const msgBox = document.createElement('div');
 
-            msgLine.className = "msgLine";
-            msgBox.className = "me";
-            msgBox.style.display = "inline-block";
-            msgLine.style.textAlign = "right";
+                msgLine.className = "msgLine";
+                msgBox.className = "me";
+                msgBox.style.display = "inline-block";
+                msgLine.style.textAlign = "right";
 
-            msgBox.append(message.value);
-            msgLine.append(msgBox);
-            chatLog.append(msgLine);
+                msgBox.append(message.value);
+                msgLine.append(msgBox);
+                chatLog.append(msgLine);
 
-            message.value = ''; //보낸후 inout창 지우기
-            chatLog.scrollTop = chatLog.scrollHeight;
-            message.focus();  // 지운후 foucs
-            e.preventDefault(); //form이여서 이벤트 막기
+                message.value = ''; //보낸후 inout창 지우기
+                chatLog.scrollTop = chatLog.scrollHeight;
+                message.focus();  // 지운후 foucs
+                e.preventDefault(); //form이여서 이벤트 막기
+            }
         });
 
         socket.on('connect', () => { //접속 되었을 때 실행
@@ -170,15 +218,15 @@
             const join_box = document.createElement('div');
             join_box.className = 'join_room_box';
             join_box.append(name + '님이 들어오셨습니다.');
-            now_people.append(name);
             chatLog.append(join_box);
         });
 
         socket.on('leaveRoom', (num, name) => {
             const leave_box = document.createElement('div');
             leave_box.className = 'leave_room_box';
+            leave_box.append(name + '님이 나갔습니다.');
             chatLog.append(leave_box); //change이벤트 발생만 leave이벤트가 발생
-        })
+        });
 
         socket.on('receive message', (msg) => { //매개변수로 서버에서 데이터를 받느냐 보내느냐를 할 수 있음 *메세지*
             const msgLine = document.createElement('div');

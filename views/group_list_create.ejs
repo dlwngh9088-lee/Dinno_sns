@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <title>Document</title>
 
     <style>
@@ -38,7 +39,6 @@
             border-radius: 5px;
             width: 585px;
             margin-left: 4px;
-            height: 20px;
         }
 
         .add_btn_box {
@@ -93,7 +93,7 @@
             height: 35px;
             border-radius: 5px;
             border: none;
-            background-color: black;
+            background-color: #4169E1;
             color: white;
         }
 
@@ -135,7 +135,8 @@
         .user_small_box {
             width: 80px;
             height: 80px;
-            background-color: #dddddd;
+            background-color: #4169E1;
+            color: white;
             text-align: center;
             border-radius: 100px;
             font-size: 12px;
@@ -147,7 +148,7 @@
         .box_bgk {
             width: 80px;
             height: 80px;
-            background-color: rgba(0, 0, 0, 0.6);
+            background-color: rgba(0, 0, 0, 0.4);
             border-radius: 100px;
             text-align: center;
             color: white;
@@ -166,19 +167,12 @@
             text-align: left;
         }
 
-        .project_manager_name p {
-            display: inline-flex;
-            margin-left: 10px;
-            margin-right: 10px;
-        }
-
         .project_manager_name {
             padding: 15px 15px 15px;
             border: 1px solid #dddddd;
             border-radius: 5px;
             width: 585px;
             margin-left: 15px;
-            height: 20px;
         }
 
         .manger_prj_box {
@@ -190,6 +184,37 @@
             display: inline-flex;
             margin-left: 5px;
             margin-right: 5px;
+        }
+
+        .project_manager_name input {
+            padding-left: 10px;
+            padding: 10px 10px 10px;
+            border-radius: 5px;
+            width: 80%;
+            border: 1px solid #cccccc;
+            margin-left: 10px;
+        }
+
+        .project_manager_name div {
+            margin-top: 10px;
+        }
+
+        .project_attendants div {
+            margin-top: 10px;
+            ;
+        }
+
+        .project_attendants input {
+            padding-left: 10px;
+            padding: 10px 10px 10px;
+            border-radius: 5px;
+            width: 80%;
+            border: 1px solid #cccccc;
+            margin-left: 10px;
+        }
+
+        .project_member_number {
+            margin-left: 5px;
         }
     </style>
 </head>
@@ -203,7 +228,7 @@
             <h3>참여 인원 리스트</h3>
             <div class="user_list_box">
                 <% for(let user of user_list_all) { %>
-                <div class="box_bgk">체크</div>
+                <div class="box_bgk"></div>
                 <div class="user_small_box">
                     <%= user.nickname %>
                 </div>
@@ -215,7 +240,7 @@
             <h3>담당자 인원 리스트</h3>
             <div class="admin_list_box">
                 <% for(let user of user_list_all) { %>
-                <div class="box_bgk">체크</div>
+                <div class="box_bgk"></div>
                 <div class="user_small_box">
                     <%= user.nickname %>
                 </div>
@@ -236,8 +261,10 @@
                         </div>
                     </div>
 
-                    <input type="password" placeholder="방 비밀번호를 적어주세요." name="project_password" class="project_name_input" required>
+                    <input type="password" placeholder="방 비밀번호를 적어주세요." name="project_password"
+                        class="project_name_input" required>
                 </div>
+
                 <div class="sp_project_box_btn">
                     <div class="big_project_box">참여인원 :
                         <div class="project_attendants"></div>
@@ -251,37 +278,85 @@
         </div>
     </div>
 </body>
+
 <script>
     const people_project = document.querySelector(".project_attendants");
     const project_manager_name = document.querySelector(".project_manager_name");
-
     const user_list_box = document.querySelectorAll(".user_list_box .user_small_box");
     const check_box = document.querySelectorAll(".user_list_box .box_bgk");
-
     const manager_list_box = document.querySelectorAll(".admin_list_box .user_small_box");
     const manager_check_box = document.querySelectorAll(".admin_list_box .box_bgk");
 
-    function same_user_MangerList(text_info, black_blcok, text_info_append) {
-        black_blcok.style.display = "block";
-        
-        const user_text_box = text_info.textContent;
-        const js_text = document.createElement('p');
-        js_text.textContent = user_text_box;
-        text_info_append.append(js_text);
+    let user_add = 0;
+    let amdin_add = 0;
 
+    function same_user_MangerList(text_info, black_blcok, text_info_append, prj_list, project_create_input) {
+        const input_div = document.createElement('div');
+        const user_text_box = text_info.textContent;
+        let js_text = document.createElement('input');
+
+        js_text.type = "text";
+        js_text.className = "project_input_style";
+        js_text.name = project_create_input;
+        js_text.readOnly = true;
+
+        input_div.append(prj_list, js_text);
+        js_text.value = user_text_box;
+        js_text.value = js_text.value.replace(/^\s*/, ""); //빈 공백 지우기
+        text_info_append.append(input_div);
+
+        black_blcok.style.display = "block";
         black_blcok.addEventListener('click', () => {
             black_blcok.style.display = "none";
-            js_text.style.display = 'none';
+            input_div.style.display = 'none';
         });
     }
 
     for (let i = 0; i < user_list_box.length; i++) {
         manager_list_box[i].addEventListener('click', () => {
-            same_user_MangerList(user_list_box[i], manager_check_box[i], project_manager_name);
+            if (amdin_add === 1) {
+                alert("PL은 최대 1개까지입니다.");
+                return amdin_add;
+            } else {
+                ++amdin_add
+                let admin_proj = `PL :`;
+                const project_manager_name_text = 'project_manager_name';
+                same_user_MangerList(user_list_box[i], manager_check_box[i], project_manager_name, admin_proj, project_manager_name_text);
+            }
         });
 
+        manager_check_box[i].addEventListener('click', () => {
+            amdin_add--;
+        });
+
+        function big_add_numberBox(center_number) {
+            check_box[i].addEventListener('click', () => {
+                const project_member_number = document.querySelectorAll(".project_member_number")
+                project_member_number.forEach((v) => {
+                    console.log('foreach', center_number)
+                    if (center_number < v.innerHTML) {
+                        console.log('result', center_number)
+                        v.innerHTML--;
+                        user_add--;
+                    }
+                })
+            });
+            return center_number;
+        }
+
         user_list_box[i].addEventListener('click', () => {
-            same_user_MangerList(user_list_box[i], check_box[i], people_project);
+            if (user_add === 8) {
+                alert('최대 8명까지입니다.');
+                return user_add;
+            } else {
+                let text_p = document.createElement('p');
+                let add_number_result = ++user_add - i + i;
+                const project_attendants_number = `project_attendants_${add_number_result}`;
+                text_p.innerHTML = `참여자: <span class="project_member_number">${add_number_result}</span>`;
+
+                same_user_MangerList(user_list_box[i], check_box[i], people_project, text_p, project_attendants_number);
+                big_add_numberBox(add_number_result);
+            }
         });
     }
 
