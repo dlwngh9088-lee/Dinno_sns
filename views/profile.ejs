@@ -236,7 +236,7 @@
         .close_box {
             color: black;
             text-align: right;
-            margin-right: 15px;
+            margin-right: 5px;
             font-size: 20px;
             padding-top: 5px;
             cursor: pointer;
@@ -244,6 +244,63 @@
 
         .close_box:hover {
             color: #4169E1;
+        }
+
+        .close_box h3 {
+            width: 30px;
+            float: right;
+            text-align: center;
+        }
+
+        /* 업데이트(수정) */
+
+        .bgk_update_popup_box {
+            background-color: rgba(0, 0, 0, 0.6);
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            z-index: 99999;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: none;
+        }
+
+        .popup_update_white_box {
+            width: 1300px;
+            height: 500px;
+            background-color: white;
+            margin: auto;
+            position: relative;
+        }
+
+        .update_textarea_box {
+            width: 85%;
+            margin: auto;
+            margin-top: 30px;
+        }
+
+        .update_close_box {
+            color: black;
+            text-align: right;
+            margin-right: 15px;
+            font-size: 20px;
+            padding-top: 5px;
+            cursor: pointer;
+        }
+
+        .update_close_box h3 {
+            width: 30px;
+            float: right;
+            text-align: center;
+        }
+
+        .update_close_box:hover {
+            color: #4169E1;
+        }
+
+        .update_textarea_box textarea {
+            height: 350px;
         }
     </style>
 </head>
@@ -282,7 +339,29 @@
                     </div>
                     <textarea id="" cols="30" rows="10" readonly><%= post.Main_gaci_contents %></textarea>
                     <div class="comment_button_box">
+                        <div class="bgk_update_popup_box">
+                            <div class="profile_pixed_popup_white_box">
+                                <div class="popup_update_white_box">
+                                    <div class="big_white_popup_box">
+                                        <div class="update_close_box">
+                                            <h3>X</h3>
+                                        </div>
+                                        <form action="/dinnoplus/user/profile/update/<%= post.id %>" method="POST">
+                                            <div class="update_textarea_box">
+                                                <textarea name="update_area" id="" cols="30"
+                                                    rows="5"><%= post.Main_gaci_contents %></textarea>
+                                            </div>
+                                            <div class="destory_ok_box">
+                                                <button>수정</button>
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <button class="update_comment_box">수정</button>
+
                         <div class="bgk_destory_popup_box">
                             <div class="profile_pixed_popup_white_box">
                                 <div class="popup_destory_white_box">
@@ -331,13 +410,24 @@
     const destory_bgk = document.querySelectorAll(".bgk_destory_popup_box");
     const close_box = document.querySelectorAll(".close_box");
 
+    const update_comment_box = document.querySelectorAll(".update_comment_box");
+    const bgk_update_popup_box = document.querySelectorAll(".bgk_update_popup_box");
+    const update_close_box = document.querySelectorAll(".update_close_box");
+
+    function open_close(bgk, close) {
+        bgk.style.display = "table";
+        close.addEventListener('click', () => {
+            bgk.style.display = "none";
+        })
+    }
+
     for (let i = 0; i < drop_gaci_box.length; i++) {
         drop_gaci_box[i].addEventListener('click', () => {
-            destory_bgk[i].style.display = "table";
+            open_close(destory_bgk[i], close_box[i]);
         });
 
-        close_box[i].addEventListener('click', () => {
-            destory_bgk[i].style.display = "none";
+        update_comment_box[i].addEventListener('click', () => {
+            open_close(bgk_update_popup_box[i], update_close_box[i]);
         })
     }
 </script>

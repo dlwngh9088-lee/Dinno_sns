@@ -50,6 +50,27 @@ router.get('/profile', async (req, res, next) => {
     }
 });
 
+router.post('/profile/update/:id', async (req, res, next) => {
+    try {
+        let update_id = req.params.id;
+
+        const profile_gaci_update = await db.Main_gaci.update({
+            Main_gaci_contents: req.body.update_area,
+        }, {
+            where: {
+                id: update_id
+            }
+        });
+
+        if(profile_gaci_update) {
+            res.status(200).redirect('/dinnoplus/user/profile')
+        }
+    } catch(e) {
+        console.error(e);
+        next(e);
+    }
+})
+
 router.post('/profile/:id', async (req, res, next) => { //삭제
     try {
         let destroy_id = req.params.id;

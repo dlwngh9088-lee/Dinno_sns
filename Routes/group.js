@@ -10,6 +10,11 @@ router.get('/list', async (req, res) => { //그룹 리스트
         order: [['createdAt', 'DESC']]
     });
 
+    
+    for(let i = 0; i < group_list_gaci.length; i++) {
+        index_room.room.push(i); //데이터베이스 갯수만큼 넣기
+    }
+
     if (req.user === undefined) {
         res.render('group_list', {
             logged: false,
@@ -39,10 +44,6 @@ router.get('/list/:id',  async (req, res) => {
     });
 
     const project_user = await db.Group_list_gaci.findAll({});
-
-    for(let i = 0; i < project_user.length; i++) {
-        index_room.room.push(i); //데이터베이스 갯수만큼 넣기
-    }
 
     if (req.user === undefined) {
         res.render('group_list_chatting', {

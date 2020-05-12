@@ -152,12 +152,12 @@ app.post('/:id/comment', async (req, res, next) => { //메인 게시물 댓글 �
 });
 
 app.all('*', (req, res) => {
-    res.status(404).send('<h1>ERROR - 페이지를 찾을 수 없습니다.');
+    res.status(404).sendFile(__dirname + '/views/404error.html');
 })
 
 let a = 0;
 let room = new Array(); //여기에 방번호 즉 채널을 집어 넣어야함
-exports.room = room; //데이터 베이스 수 만큼 집어넣음 
+exports.room = room; //데이터 베이스 수 만큼 집어넣음 *전역변수로해서 다른 파일에도 이변수를 쓸수있게*
 
 io.on('connection', (socket) => { // 사용자가 웹사이트에 접속을 하게되면 socket.io에 의해 connection event가 자동을 발생 GET요청을 계속 하면 connection 이벤트가 발생    
     socket.on('disconnect', () => { //접속이 해제(끊어졌을때)되는 경우에 발생하는 이벤트
