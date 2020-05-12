@@ -91,19 +91,20 @@ router.post('/profile/:id', async (req, res, next) => { //삭제
     }
 })
 
-router.post('/change_nickname', async (req, res, next) => {
+router.post('/change_nickname', async (req, res, next) => { //닉네임 변경
     try {
         const name_upadte = await db.User.update({
             nickname: req.body.change_name
         }, {
             where: {
-                id: 3,
+                id: req.user.id //req.user에 id가 들어있음
             }
         });
 
         if (name_upadte) {
             res.redirect('/dinnoplus/user/profile');
         }
+
     } catch (e) {
         console.error(e);
         next(e);
@@ -161,7 +162,7 @@ router.post('/join', async (req, res, next) => {
 
 router.get('/logout', (req, res) => { //로그아웃
     req.logOut();
-    req.session.destroy();
+    req.session.destroy(); //세션파괴
     res.redirect('/');
 });
 
