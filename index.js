@@ -111,7 +111,8 @@ app.post('/', async (req, res, next) => { //메인 게시물
         let main_gaci_user_name = await req.user.nickname;
         const Main_gaci_contents_db = await db.Main_gaci.create({
             Main_gaci_contents_user_name: main_gaci_user_name,
-            Main_gaci_contents: req.body.Main_gaci_contents
+            Main_gaci_contents: req.body.Main_gaci_contents,
+            UserId: req.user.id
         });
 
         if (Main_gaci_contents_db) {
@@ -138,7 +139,8 @@ app.post('/:id/comment', async (req, res, next) => { //메인 게시물 댓글 �
         const main_gacis_comment = await db.Comment.create({
             MainGaciId: post.id, //몇번 댓글을 달아야 할지 알기위해 MainGaciId에 
             content: req.body.content,
-            contents_user_name: req.user.nickname
+            contents_user_name: req.user.nickname,
+            UserId: req.user.id
         });
 
         if (main_gacis_comment) {
@@ -156,8 +158,7 @@ app.all('*', (req, res) => {
 })
 
 let a = 0;
-let room = new Array(); //여기에 방번호 즉 채널을 집어 넣어야함
-exports.room = room; //데이터 베이스 수 만큼 집어넣음 *전역변수로해서 다른 파일에도 이변수를 쓸수있게*
+let user_room = [];
 
 io.on('connection', (socket) => { // 사용자가 웹사이트에 접속을 하게되면 socket.io에 의해 connection event가 자동을 발생 GET요청을 계속 하면 connection 이벤트가 발생    
     socket.on('disconnect', () => { //접속이 해제(끊어졌을때)되는 경우에 발생하는 이벤트
@@ -165,23 +166,36 @@ io.on('connection', (socket) => { // 사용자가 웹사이트에 접속을 하�
     });
 
     socket.on('joinRoom', (num, name) => { //방에 들어가는 이벤트
-        socket.join(room[num], () => { //배열준에[몇번째]
-            console.log('join', num);
-            socket.broadcast.to(room[num]).emit('joinRoom', num, name); //데이터베이스 집어 넣은 수에 방 번호 고르기
+        user_room.push({
+            id: num,
+            socket: socket.id,
+            member: [
+                name
+            ]
+        });
+
+        for(let i = 0; i < user_room.length; i++) { //F5 증복막기
+            if(user_room[i].id === num && user_room[i].member.name === name && user_room[i].socket !== socket.id) {
+                user_room.splice(i, 1);
+            }
+        }
+        console.log(user_room);
+        socket.join(num, () => { //배열에[몇번째]
+            socket.broadcast.to(num).emit('joinRoom', num, name); //데이터베이스 집어 넣은 수에 방 번호 고르기
         });
     });
 
     socket.on('leaveRoom', (num, name) => { //방을 나가는 이밴트
-        socket.leave(room[num], () => {
+        socket.leave(num, () => {
             console.log('leave', num);
-            io.to(room[num]).emit('leaveRoom', num, name);
+            io.to(num).emit('leaveRoom', num, name);
         });
     });
 
     socket.on('send message', (num, name, text) => { //send message에 name과 text에 정보를 받음 일종의 클라이언트와 주고받는 메세지 이벤트
         const msg = name + ':' + text; //클라이언트에서 보내준 name 과 text정보
         a = num;
-        socket.broadcast.to(room[a]).emit('receive message', msg); //메세지 내용과 이름을 클라이언트 receive message로 보내줌,  나를빼고 제외한 모든 방에있는 모든 사람한테
+        socket.broadcast.to(a).emit('receive message', msg); //메세지 내용과 이름을 클라이언트 receive message로 보내줌,  나를빼고 제외한 모든 방에있는 모든 사람한테
     });
 });
 

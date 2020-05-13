@@ -133,11 +133,10 @@
     <div class="big_chat_box">
         <div class="headLine_box">
             <h1>방 제목 : <%= project_create.project_name %></h1>
-            <h1>현재 참여자: <b class="now_people"></b> </h1>
         </div>
         <div class="big_people_List">
             <div class="big_userlist_box">
-                <h3>참여 인원 리스트</h3>
+                <h3>방 참여인원</h3>
                 <div class="user_list_box">
                     <% for(let user of project_user) { %>
                     <div class="box_bgk"></div>
@@ -173,7 +172,6 @@
         const select = document.getElementById("select");
         const get_out = document.getElementById("get_out");
         const data_id = document.querySelector(".data_id");
-        const now_people = document.querySelector(".now_people");
 
         let num = <%- JSON.stringify(project_create.id) %>; //숫자는 비동기에 넣으면 안됨 *방번호를 알 수있는 번호*
 

@@ -8,6 +8,7 @@
     <style>
         .main_gaci_section_box {
             width: 1400px;
+            height: 100%;
             margin: auto;
             margin-top: 50px;
         }
@@ -67,7 +68,10 @@
             margin: auto;
         }
 
-        .main_gaci_box {
+        .big_main_gaci_box {
+            width: 100%;
+            height: 100%;
+            text-align: center;
             margin-top: 100px;
             margin-bottom: 100px;
         }
@@ -134,7 +138,7 @@
         }
 
         .big_comment_area_box {
-            position:relative;
+            position: relative;
         }
 
         .big_comment_area_box textarea {
@@ -149,7 +153,7 @@
     </header>
 
     <div class="main_gaci_section_box">
-        <div class="main_gaci_box">
+        <div class="big_main_gaci_box">
             <form action="/" method="POST">
                 <div class="radious_big_box">
                     <div class="radious_nickname_box">
@@ -164,44 +168,43 @@
                     <p>총 <%= rows.length %> 게시물</p>
                 </div>
             </form>
-            <div class="main_gaci_box">
-                <% for(let post of rows) { %>
-                <div>
-                    <div class="contents_big_text_area_box">
-                        <div class="radious_big_box">
-                            <div class="radious_nickname_box">
-                                <h3><%= post.Main_gaci_contents_user_name[0] %></h3>
-                            </div>
+            <% for(let post of rows) { %>
+            <div>
+                <div class="contents_big_text_area_box">
+                    <div class="radious_big_box">
+                        <div class="radious_nickname_box">
+                            <h3><%= post.Main_gaci_contents_user_name[0] %></h3>
                         </div>
-                        <div class="contents_area_box"><textarea name="" id="" cols="30" rows="10" class="list_boxs"
-                                readonly><%= post.Main_gaci_contents %></textarea></div>
                     </div>
-                    <div class="comments_box">
-                        <form action="/<%= post.id %>/comment" method="POST">
-                            <div class="main_gaci_list_box_btn">
-                                <button>댓글 등록</button>
-                            </div>
-                            <div class="big_comments_box">
-                                <textarea name="content" cols="30" rows="5" placeholder="댓글을 입력해주세요."
-                                    required></textarea>
-                                <% for (let comment of comment_main_gacis) { %>
-                                    <% if(post.id === comment.MainGaciId) { %> <!-- post.id랑 게시글에 mainGaciId랑 일치하는 게시글만 출력 mainGaciId랑=>게시글의 post번호-->
-                                        <div class="big_comment_area_box">
-                                            <div class="comment_radious_box">
-                                            <h1><%= comment.contents_user_name[0] %></h1>
-                                        </div>
-                                        <textarea cols="30" rows="5" class="comments_real_box"
-                                            readonly><%= comment.content %></textarea>
-                                    <% } %>
-                                <% }%>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                    <div class="contents_area_box"><textarea name="" id="" cols="30" rows="10" class="list_boxs"
+                            readonly><%= post.Main_gaci_contents %></textarea></div>
                 </div>
-                <% } %>
+                <div class="comments_box">
+                    <form action="/<%= post.id %>/comment" method="POST">
+                        <div class="main_gaci_list_box_btn">
+                            <button>댓글 등록</button>
+                        </div>
+                        <div class="big_comments_box">
+                            <textarea name="content" cols="30" rows="5" placeholder="댓글을 입력해주세요." required></textarea>
+                            <% for (let comment of comment_main_gacis) { %>
+                            <% if(post.id === comment.MainGaciId) { %>
+                            <!-- post.id랑 게시글에 mainGaciId랑 일치하는 게시글만 출력 mainGaciId랑=>게시글의 post번호-->
+                            <div class="big_comment_area_box">
+                                <div class="comment_radious_box">
+                                    <h1><%= comment.contents_user_name[0] %></h1>
+                                </div>
+                                <textarea cols="30" rows="5" class="comments_real_box"
+                                    readonly><%= comment.content %></textarea>
+                            </div>
+                            <% } %>
+                            <% }%>
+                        </div>
+                    </form>
+                </div>
             </div>
+            <% } %>
         </div>
+    </div>
     </div>
 </body>
 
@@ -215,4 +218,5 @@
         });
     }
 </script>
+
 </html>

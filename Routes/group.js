@@ -2,18 +2,12 @@ const express = require('express');
 const router = express.Router();
 const db = require('../models');
 const path = require("path");
-const index_room = require('../index'); //배열에 group만큼의 수를 넣게 만들기 위해
 
 router.get('/list', async (req, res) => { //그룹 리스트
     const pageing = 1;
     const group_list_gaci = await db.Group_list_gaci.findAll({
         order: [['createdAt', 'DESC']]
     });
-
-    
-    for(let i = 0; i < group_list_gaci.length; i++) {
-        index_room.room.push(i); //데이터베이스 갯수만큼 넣기
-    }
 
     if (req.user === undefined) {
         res.render('group_list', {
@@ -32,8 +26,8 @@ router.get('/list', async (req, res) => { //그룹 리스트
     }
 });
 
-router.get('/list/:id',  async (req, res) => {
-    if(!req.user) {
+router.get('/list/:id', async (req, res) => {
+    if (!req.user) {
         return res.redirect('/');
     }
     let group_list_id = await req.params.id;
@@ -90,7 +84,7 @@ router.get('/list/page/:id', async (req, res) => { //페이징
 });
 
 router.get('/lists/create_project', async (req, res) => {
-    if(!req.user) {
+    if (!req.user) {
         return res.redirect('/');
     }
     const user_list_all = await db.User.findAll({})
@@ -111,7 +105,7 @@ router.get('/lists/create_project', async (req, res) => {
 
 router.post('/list/project_create', async (req, res, next) => {
     try {
-        const project_create = await db.Group_list_gaci.create({
+        await db.Group_list_gaci.create({
             project_name: req.body.project_name,
             project_manager_name: req.body.project_manager_name,
             project_password: req.body.project_password,
@@ -124,10 +118,8 @@ router.post('/list/project_create', async (req, res, next) => {
             project_attendants_7: req.body.project_attendants_7,
             project_attendants_8: req.body.project_attendants_8,
         });
-        
-        res.status(200).redirect('/dinnoplus/group/list')
-        return res.json(project_create);
 
+        res.status(200).redirect('/dinnoplus/group/list')
     } catch (e) {
         console.error(e);
         next(e);

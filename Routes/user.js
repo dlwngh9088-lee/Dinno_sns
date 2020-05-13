@@ -62,10 +62,10 @@ router.post('/profile/update/:id', async (req, res, next) => {
             }
         });
 
-        if(profile_gaci_update) {
+        if (profile_gaci_update) {
             res.status(200).redirect('/dinnoplus/user/profile')
         }
-    } catch(e) {
+    } catch (e) {
         console.error(e);
         next(e);
     }
@@ -100,6 +100,38 @@ router.post('/change_nickname', async (req, res, next) => { //닉네임 변경
                 id: req.user.id //req.user에 id가 들어있음
             }
         });
+
+        await db.Main_gaci.update({
+            Main_gaci_contents_user_name: req.body.change_name
+        }, {
+            where: {
+                UserId: req.user.id
+            }
+        });
+
+        await db.Gaci.update({
+            gaci_user_name: req.body.change_name
+        }, {
+            where: {
+                userId: req.user.id
+            }
+        });
+
+        await db.List_comment.update({
+            notice_contents_user_name: req.body.change_name
+        }, {
+            where: {
+                userId: req.user.id
+            }
+        });
+
+        await db.Comment.update({
+            contents_user_name: req.body.change_name
+        }, {
+            where: {
+                userId: req.user.id
+            }
+        })
 
         if (name_upadte) {
             res.redirect('/dinnoplus/user/profile');

@@ -43,7 +43,7 @@ router.get('/in_my_writing', async (req, res, next) => {
                 rows: in_my_gaci,
             });
         }
-        
+
     } catch (e) {
         console.error(e);
         next(e);
@@ -209,7 +209,7 @@ router.get('/list/detail/:id', async (req, res, next) => { // 상세 보기
 
 router.post('/list/detail/:id', async (req, res, next) => { //댓글 등록
     try {
-        if(!req.user) {
+        if (!req.user) {
             res.status(401).send('로그인을 해주세요.')
         }
         let post_detail_params_id = req.params.id
@@ -222,7 +222,8 @@ router.post('/list/detail/:id', async (req, res, next) => { //댓글 등록
         const main_gacis_comment = await db.List_comment.create({
             GaciId: post.id, //몇번 댓글을 달아야 할지 알기위해 gadiid에  댓글은 게시글에 하위 존재이기때문에 몇번째 게시글에 댓글인지 알기위헤서 post에 req.params.id 로 번호를 알고 그걸 gacild에 넣음
             notice_content: req.body.notice_content,
-            notice_contents_user_name: req.user.nickname
+            notice_contents_user_name: req.user.nickname,
+            UserId: req.user.id
         });
 
         if (main_gacis_comment) {
@@ -235,15 +236,25 @@ router.post('/list/detail/:id', async (req, res, next) => { //댓글 등록
     }
 });
 
-router.get('/writing', (req, res) => { //글쓰기
-    if (req.user === undefined) {
-        res.render('post_writing', { logged: false });
-    } else {
-        res.render('post_writing', {
-            logged: true,
-            username: req.user.nickname,
-        });
+router.get('/writing', (req, res, next) => { //글쓰기
+    try {
+        if(!req.user) {
+            res.redirect('/');
+        }
+
+        if (req.user === undefined) {
+            res.render('post_writing', { logged: false });
+        } else {
+            res.render('post_writing', {
+                logged: true,
+                username: req.user.nickname,
+            });
+        }
+    } catch (e) {
+        console.error(e);
+        next(e);
     }
+
 });
 
 router.post('/writing', async (req, res, next) => { //글쓰기
@@ -253,6 +264,7 @@ router.post('/writing', async (req, res, next) => { //글쓰기
             gaci_user_name: req.body.gaci_user_name,
             gaci_date: req.body.gaci_date,
             gaci_contents: req.body.gaci_contents,
+            UserId: req.user.id
         });
         if (gaci_writing) {
             return res.status(200).redirect('/dinnoplus/post/list');
