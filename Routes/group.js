@@ -37,7 +37,11 @@ router.get('/list/:id', async (req, res) => {
         }
     });
 
-    const project_user = await db.Group_list_gaci.findAll({});
+    const project_user = await db.Group_list_gaci.findAll({
+        where: {
+            id: project_create.id,
+        }
+    });
 
     if (req.user === undefined) {
         res.render('group_list_chatting', {
@@ -105,10 +109,17 @@ router.get('/lists/create_project', async (req, res) => {
 
 router.post('/list/project_create', async (req, res, next) => {
     try {
+        const date = new Date();
+        const year = date.getFullYear(); // 년도
+        const month = date.getMonth() + 1;  // 월
+        const month_date = date.getDate();  // 날짜
+        const today_group = year + '/' + month + '/' + month_date;
+
         await db.Group_list_gaci.create({
             project_name: req.body.project_name,
             project_manager_name: req.body.project_manager_name,
             project_password: req.body.project_password,
+            group_date: today_group,
             project_attendants_1: req.body.project_attendants_1,
             project_attendants_2: req.body.project_attendants_2,
             project_attendants_3: req.body.project_attendants_3,

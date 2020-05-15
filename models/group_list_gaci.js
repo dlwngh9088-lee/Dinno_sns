@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(50),
             allowNull: false,
         },
+        group_date: {
+            type: DataTypes.STRING(30),
+            allowNull: false,
+        },
         project_attendants_1: {
             type: DataTypes.STRING(30),
             allowNull: false,

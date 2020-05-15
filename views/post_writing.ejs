@@ -47,6 +47,12 @@
             text-align: left;
             padding-top: 10px;
         }
+
+        #preview {
+            width: 500px;
+            border: 1px solid;
+            padding: 10px 10px 10px;
+        }
     </style>
 </head>
 
@@ -63,23 +69,48 @@
             <br />
             <input type="text" name="gaci_date" class="gaci_date" readonly />
             <br />
-            <textarea name="gaci_contents" rows="20" placeholder="내용을 입력해주세요."></textarea>
+            <textarea name="gaci_contents" id="area_box" rows="20" placeholder="내용을 입력해주세요."></textarea>
             <br />
             <div class="gaic_input_submit_box">
                 <input type="submit" value="게시글 쓰기">
             </div>
         </form>
-        <!-- <div class="post_file_box">
+
+        <div class="post_file_box">
             <form action="/dinnoplus/post/writing/uploade" method="POST" enctype="multipart/form-data">
-                <input type="file" name="imgFile">
-                <input type="submit" value="파일 업로드하기">
+                <input type="file" id="upload" name='upload/' multiple="multiple">
+                <input type='submit' name='sub' value='업로드'/>
+                <div id="preview" contenteditable="true">
+
+                </div>
             </form>
-        </div> -->
+        </div>
     </div>
 </body>
 
 <script>
     const gaci_date = document.querySelector(".gaci_date");
+    const upload = document.getElementById("upload");
+
+    upload.addEventListener('change', (e) => {
+        const get_file = e.target.files;
+        const img = document.createElement("img");
+        const reader = new FileReader();
+
+        reader.onload = ((up_img) => {
+            return (e) => {
+                up_img.style.width="250px";
+                up_img.src = e.target.result;
+            }
+        })(img);
+
+        if(get_file) {
+            reader.readAsDataURL(get_file[0]);
+        }
+
+        document.getElementById("preview").appendChild(img);
+    });
+
     function input_date() {
         let date = new Date();
         const year = date.getFullYear();
@@ -93,7 +124,6 @@
     }
 
     input_date();
-
     setInterval(() => {
         input_date();
     }, 1000);

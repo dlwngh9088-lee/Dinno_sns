@@ -72,6 +72,15 @@ app.use('/dinnoplus/posts', postsDinnoplus);
 app.use('/dinnoplus/post', postDinnoplus);
 app.use('/dinnoplus/group', groupDinnoplus);
 
+app.get('/search', async (req, res, next) => {
+    try {
+        console.log(req.query.page);
+    } catch (e) {
+        console.error(e);
+        next(e);
+    }
+})
+
 app.get('/', async (req, res) => {
     const main_gaci_find_contents_list = await db.Main_gaci.findAll({
         order: [['createdAt', 'DESC']], //내림차순
@@ -161,34 +170,36 @@ let a = 0;
 let user_room = [];
 
 io.on('connection', (socket) => { // 사용자가 웹사이트에 접속을 하게되면 socket.io에 의해 connection event가 자동을 발생 GET요청을 계속 하면 connection 이벤트가 발생    
-    socket.on('disconnect', () => { //접속이 해제(끊어졌을때)되는 경우에 발생하는 이벤트
-        console.log('연결 끊어짐'); // socket.broadcast.emit //본인을 제외한 나머지 유저에게 데이터를 전송 
-    });
-
-    socket.on('joinRoom', (num, name) => { //방에 들어가는 이벤트
-        user_room.push({
+    socket.on('joinRoom', (num, name, roomName) => { //방에 들어가는 이벤트
+        user_room.push({ //방에입잘할때마다 유저 정보를 user_room에 넣음
             id: num,
+            room_name: roomName,
             socket: socket.id,
-            member: [
-                name
-            ]
+            member: [name]
         });
 
-        for(let i = 0; i < user_room.length; i++) { //F5 증복막기
-            if(user_room[i].id === num && user_room[i].member.name === name && user_room[i].socket !== socket.id) {
-                user_room.splice(i, 1);
+        socket.join(num, () => { //꼭 배열로 안해도되고 num으로 같은 num인지 num이같으면 방이같다는 뜻으로속한 사람만 채팅 실행
+            for (let i = 0; i < user_room.length; i++) { //f5나 왔다갔다면 이미 user정보가있음에도 불가하고 계속 추가 if문으로 증복되면 자름
+                if (user_room[i].id === num && user_room[i].member[0] === name && user_room[i].socket !== socket.id) { //증복된 사람 막기
+                    user_room.splice(i, 1);
+                    return socket.broadcast.to(num).emit('joinRoom'); //증복되는게 있으면 클라이언트에 없는 데이터 보내고 그 다음 joinRoom이 전달이 안되게 막기
+                } 
             }
-        }
-        console.log(user_room);
-        socket.join(num, () => { //배열에[몇번째]
-            socket.broadcast.to(num).emit('joinRoom', num, name); //데이터베이스 집어 넣은 수에 방 번호 고르기
+            const count = io.sockets.adapter.rooms[num].length; //방 인원수
+            io.to(num).emit('joinRoom', num, name, count); //나를 포함한 전체에게 보내기
+            console.log(user_room);
         });
     });
 
     socket.on('leaveRoom', (num, name) => { //방을 나가는 이밴트
         socket.leave(num, () => {
-            console.log('leave', num);
+            for(let i = 0; i < user_room.length; i++) {
+                if(user_room[i].id === num && user_room[i].member[0] === name) { //나가면 원래있던방에 사용자의 데이터를 지움 
+                    user_room.splice(i, 1);
+                }
+            }
             io.to(num).emit('leaveRoom', num, name);
+            console.log('leave', user_room);
         });
     });
 
@@ -196,6 +207,10 @@ io.on('connection', (socket) => { // 사용자가 웹사이트에 접속을 하�
         const msg = name + ':' + text; //클라이언트에서 보내준 name 과 text정보
         a = num;
         socket.broadcast.to(a).emit('receive message', msg); //메세지 내용과 이름을 클라이언트 receive message로 보내줌,  나를빼고 제외한 모든 방에있는 모든 사람한테
+    });
+
+    socket.on('disconnect', (num, name) => { //접속이 해제(끊어졌을때)되는 경우에 발생하는 이벤트
+        console.log('연결 끊김')
     });
 });
 

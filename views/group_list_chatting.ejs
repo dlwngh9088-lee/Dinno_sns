@@ -132,20 +132,7 @@
     </header>
     <div class="big_chat_box">
         <div class="headLine_box">
-            <h1>방 제목 : <%= project_create.project_name %></h1>
-        </div>
-        <div class="big_people_List">
-            <div class="big_userlist_box">
-                <h3>방 참여인원</h3>
-                <div class="user_list_box">
-                    <% for(let user of project_user) { %>
-                    <div class="box_bgk"></div>
-                    <div class="user_small_box">
-                        <%= user.project_attendants_1  %> <!-- 수정 해야함-->
-                    </div>
-                    <% } %>
-                </div>
-            </div>
+            <h1>방 제목 : <span><%= project_create.project_name %></span></h1>
         </div>
         <div>
             <div id="chatLog" class="chat_log" readonly>
@@ -172,16 +159,16 @@
         const select = document.getElementById("select");
         const get_out = document.getElementById("get_out");
         const data_id = document.querySelector(".data_id");
+        const headLine_box_span = document.querySelector(".headLine_box span");
 
         let num = <%- JSON.stringify(project_create.id) %>; //숫자는 비동기에 넣으면 안됨 *방번호를 알 수있는 번호*
 
-        socket.emit('joinRoom', num, in_name.value); //처음 방에 입장할때
-        socket.emit('leave_dis', num);
+        socket.emit('joinRoom', num, in_name.value, headLine_box_span.innerHTML); //처음 방에 입장할때
 
         get_out.addEventListener('click', () => { //방나가기 기능
             location.href = "/dinnoplus/group/list"
             socket.emit('leaveRoom', num, in_name.value);
-        })
+        });
 
         document.getElementById('chat').addEventListener('submit', (e) => {
             socket.emit('send message', num, in_name.value, message.value); //socket.on("send message")에 name과 message의 value값을 서버에 보냄
@@ -212,11 +199,15 @@
             socket.emit('newUser', in_name.value); //newuser에게 이름 정보를 보내줌
         });
 
-        socket.on('joinRoom', (num, name) => {
-            const join_box = document.createElement('div');
-            join_box.className = 'join_room_box';
-            join_box.append(name + '님이 들어오셨습니다.');
-            chatLog.append(join_box);
+        socket.on('joinRoom', (num, name, count) => {
+            if (name === undefined) { //undefinded랑 name정보가있는 emit 같이 날라와서 같이 보내짐
+                return;      
+            } else {
+                const join_box = document.createElement('div');
+                join_box.className = 'join_room_box';
+                join_box.append(name + '님이 들어오셨습니다.' + '\n' + '현재까지' + '\n' + count  + '명');
+                chatLog.append(join_box);
+            }
         });
 
         socket.on('leaveRoom', (num, name) => {

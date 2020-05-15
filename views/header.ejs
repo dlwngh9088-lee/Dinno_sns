@@ -80,17 +80,16 @@
             border-radius: 5px;
             background-color: #cccccc;
             border: 1px solid #cccccc;
-            color:white;
+            color: white;
             font-size: 16px;
             outline: none;
             cursor: pointer;
-        }    
+        }
 
         .listbox ul .sp_search_input button:hover {
             background-color: #ADD8E6;
             border: 1px solid #ADD8E6;
-        }   
-
+        }
     </style>
 </head>
 
@@ -105,8 +104,10 @@
             <div class="listbox">
                 <ul>
                     <li class="sp_search_input">
-                        <input type="text" placeholder="검색">
-                        <button>검색</button>
+                        <form action="/search" method="GET">
+                            <input type="text" placeholder="검색">
+                            <button>검색</button>
+                        </form>
                     </li>
                     <% if(!logged) { %>
                     <a href="/dinnoplus/user/login">

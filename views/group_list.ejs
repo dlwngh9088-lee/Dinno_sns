@@ -76,7 +76,11 @@
             justify-content: flex-end;
             width: 30%;
             float: right;
-            padding-right: 15px;
+            padding-right: 20px;
+        }
+
+        .createdAt_date span {
+            font-weight: bold;
         }
 
         .pr_pm {
@@ -152,11 +156,10 @@
                                 <span><%= post.project_attendants_6 %></span>
                                 <span><%= post.project_attendants_7 %></span>
                                 <span><%= post.project_attendants_8 %></span>
-                                <span><%= post.project_time %></span>
                             </p>
                         </div>
                         <div class="createdAt_date">
-                            <p><%= post.createdAt %></p>
+                            <p>만든 날짜: <span><%= post.group_date %></span></p>
                         </div>
                     </div>
                 </div>
