@@ -210,7 +210,7 @@ router.get('/list/detail/:id', async (req, res, next) => { // 상세 보기
 router.post('/list/detail/:id', async (req, res, next) => { //댓글 등록
     try {
         if (!req.user) {
-            res.status(401).send('로그인을 해주세요.')
+            return res.redirect('/dinnoplus/user/login')
         }
         let post_detail_params_id = req.params.id
         const post = await db.Gaci.findOne({

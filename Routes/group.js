@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../models');
-const path = require("path");
 
 router.get('/list', async (req, res) => { //그룹 리스트
+    if (!req.user) {
+        return res.redirect('/');
+    }
     const pageing = 1;
     const group_list_gaci = await db.Group_list_gaci.findAll({
         order: [['createdAt', 'DESC']]
@@ -26,41 +28,10 @@ router.get('/list', async (req, res) => { //그룹 리스트
     }
 });
 
-router.get('/list/:id', async (req, res) => {
+router.get('/list/page/:id', async (req, res) => { //페이징
     if (!req.user) {
         return res.redirect('/');
     }
-    let group_list_id = await req.params.id;
-    const project_create = await db.Group_list_gaci.findOne({
-        where: {
-            id: group_list_id,
-        }
-    });
-
-    const project_user = await db.Group_list_gaci.findAll({
-        where: {
-            id: project_create.id,
-        }
-    });
-
-    if (req.user === undefined) {
-        res.render('group_list_chatting', {
-            logged: false,
-            username: '',
-            project_create: '',
-            project_user: '',
-        });
-    } else {
-        res.render('group_list_chatting', {
-            logged: true,
-            username: req.user.nickname,
-            project_create: project_create,
-            project_user: project_user,
-        });
-    }
-});
-
-router.get('/list/page/:id', async (req, res) => { //페이징
     const list_gorup = await req.params.id;
     const pageing_list = await db.Group_list_gaci.findAll({
         include: [{ //가져올때 작성자도 함께
@@ -87,6 +58,46 @@ router.get('/list/page/:id', async (req, res) => { //페이징
     }
 });
 
+router.get('/list/:id', async (req, res, next) => {
+    try {
+        if (!req.user) {
+            return res.redirect('/');
+        }
+        let group_list_id = await req.params.id;
+
+        const project_create = await db.Group_list_gaci.findOne({
+            where: {
+                id: group_list_id,
+            }
+        });
+
+        const project_user = await db.Group_list_gaci.findAll({
+            where: {
+                id: project_create.id,
+            }
+        });
+
+        if (req.user === undefined) {
+            res.render('group_list_chatting', {
+                logged: false,
+                username: '',
+                project_create: '',
+                project_user: '',
+            });
+        } else {
+            res.render('group_list_chatting', {
+                logged: true,
+                username: req.user.nickname,
+                project_create: project_create,
+                project_user: project_user,
+            });
+        }
+    } catch (e) {
+        console.error(e);
+        next(e);
+    }
+});
+
 router.get('/lists/create_project', async (req, res) => {
     if (!req.user) {
         return res.redirect('/');
@@ -106,6 +117,28 @@ router.get('/lists/create_project', async (req, res) => {
         });
     }
 });
+
+router.post('/list/popup_pwd/:id', async (req, res, next) => {
+    try {
+        const popup_pwd_input = await req.body.group_pwd;
+        const db_group_list = await db.Group_list_gaci.findAll({
+            where: {
+                id: req.params.id
+            }
+        });
+
+        for (let post of db_group_list) {
+            if (popup_pwd_input === post.project_password) {
+                res.status(200).redirect(`/dinnoplus/group/list/${post.id}`);
+            } else {
+                res.redirect('/dinnoplus/group/list')
+            }
+        }
+    } catch (e) {
+        console.error(e);
+        next(e);
+    }
+})
 
 router.post('/list/project_create', async (req, res, next) => {
     try {

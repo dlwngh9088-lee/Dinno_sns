@@ -210,10 +210,10 @@
             }
         });
 
-        socket.on('leaveRoom', (num, name) => {
+        socket.on('leaveRoom', (num, name, count) => {
             const leave_box = document.createElement('div');
             leave_box.className = 'leave_room_box';
-            leave_box.append(name + '님이 나갔습니다.');
+            leave_box.append(name + '님이 나갔습니다.' + '\n' + '현재까지' + '\n' + count  + '명');
             chatLog.append(leave_box); //change이벤트 발생만 leave이벤트가 발생
         });
 

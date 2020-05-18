@@ -94,20 +94,20 @@
                 </tr>
             </thead>
             <tbody>
-                <% for(let post of rows) { %>
+                <% for(let i = 0; i < rows.length; i++) { %>
                 <tr>
-                    <td><%= post.id %></td>
-                    <td><%= post.gaci_user_name %></td>
-                    <td><%= post.gaci_title %></td>
-                    <td><%= post.gaci_date %></td>
+                    <td><%= i+1 %></td>
+                    <td><%= rows[i].gaci_user_name %></td>
+                    <td><%= rows[i].gaci_title %></td>
+                    <td><%= rows[i].gaci_date %></td>
                     <td>
-                        <a href="/dinnoplus/post/in_my_writing/<%= post.id %>">
+                        <a href="/dinnoplus/post/in_my_writing/<%= rows[i].id %>">
                             <button>수정</button>
                         </a>
                     </td>
 
                     <td>
-                        <form action="/dinnoplus/post/in_my_writing/<%= post.id %>?_method=DELETE" method="POST">
+                        <form action="/dinnoplus/post/in_my_writing/<%= rows[i].id %>?_method=DELETE" method="POST">
                             <button>삭제</button>
                         </form>
                     </td>

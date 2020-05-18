@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const path = require('path');
 const db = require('../models'); //models만 불러와도 user테이블을 쓸 수 있음
 const bcrypt = require('bcrypt');
 const passport = require('passport');
@@ -73,8 +72,8 @@ router.post('/profile/update/:id', async (req, res, next) => {
 
 router.post('/profile/:id', async (req, res, next) => { //삭제
     try {
-        let destroy_id = req.params.id;
 
+        let destroy_id = req.params.id;
         const profile_gaci = await db.Main_gaci.destroy({
             where: {
                 id: destroy_id

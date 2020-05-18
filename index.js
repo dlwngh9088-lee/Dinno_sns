@@ -6,8 +6,8 @@ const morgan = require('morgan'); //요청 로그 남기는 npm
 const dotenv = require('dotenv');
 const path = require('path');
 
-var http = require('http').Server(app); //socket.io는 express를 받아들이못함
-var io = require('socket.io')(http);
+let http = require('http').Server(app); //socket.io는 express를 받아들이못함
+let io = require('socket.io')(http);
 
 const cors = require('cors'); // ex: 프론트 서버 주소 localhost:3000, 백엔드 서버서 localhost:3065일 때 서로 달라서 요청이 안감 그걸 해결해줌
 
@@ -114,12 +114,11 @@ app.get('/', async (req, res) => {
 app.post('/', async (req, res, next) => { //메인 게시물 
     try {
         if (!req.user) {
-            return res.status(401).send('로그인을 하세요.');
+            return res.redirect('/dinnoplus/user/login')
         }
 
-        let main_gaci_user_name = await req.user.nickname;
         const Main_gaci_contents_db = await db.Main_gaci.create({
-            Main_gaci_contents_user_name: main_gaci_user_name,
+            Main_gaci_contents_user_name: req.user.nickname,
             Main_gaci_contents: req.body.Main_gaci_contents,
             UserId: req.user.id
         });
@@ -136,7 +135,7 @@ app.post('/', async (req, res, next) => { //메인 게시물
 app.post('/:id/comment', async (req, res, next) => { //메인 게시물 댓글 등록 
     try {
         if (!req.user) {
-            return res.status(401).send('로그인을 하세요.');
+            return res.redirect('/dinnoplus/user/login')
         }
 
         const post = await db.Main_gaci.findOne({
@@ -183,23 +182,23 @@ io.on('connection', (socket) => { // 사용자가 웹사이트에 접속을 하�
                 if (user_room[i].id === num && user_room[i].member[0] === name && user_room[i].socket !== socket.id) { //증복된 사람 막기
                     user_room.splice(i, 1);
                     return socket.broadcast.to(num).emit('joinRoom'); //증복되는게 있으면 클라이언트에 없는 데이터 보내고 그 다음 joinRoom이 전달이 안되게 막기
-                } 
+                }
             }
-            const count = io.sockets.adapter.rooms[num].length; //방 인원수
-            io.to(num).emit('joinRoom', num, name, count); //나를 포함한 전체에게 보내기
+            const join_count = io.sockets.adapter.rooms[num].length; //방 인원수
+            io.to(num).emit('joinRoom', num, name, join_count); //나를 포함한 전체에게 보내기
             console.log(user_room);
         });
     });
 
     socket.on('leaveRoom', (num, name) => { //방을 나가는 이밴트
+        const leave_count = io.sockets.adapter.rooms[num].length; //나갔으니 현재 인원 다시 구하기, 방에 아무도 없으면 length가 아예없어서 undefind가 떠서 에러 그래서 방을 나가기전에 방의 숫자를 샘
         socket.leave(num, () => {
-            for(let i = 0; i < user_room.length; i++) {
-                if(user_room[i].id === num && user_room[i].member[0] === name) { //나가면 원래있던방에 사용자의 데이터를 지움 
+            for (let i = 0; i < user_room.length; i++) {
+                if (user_room[i].id === num && user_room[i].member[0] === name) { //나가면 원래있던방에 현재 이름과 데이터의 이름 현재 사용자가 있는 방의 이름과 데이터에 방이름이 똑같으면 그 데이터의 사용자 데이터를 지움 
                     user_room.splice(i, 1);
                 }
             }
-            io.to(num).emit('leaveRoom', num, name);
-            console.log('leave', user_room);
+            io.to(num).emit('leaveRoom', num, name, leave_count); 
         });
     });
 
@@ -209,7 +208,7 @@ io.on('connection', (socket) => { // 사용자가 웹사이트에 접속을 하�
         socket.broadcast.to(a).emit('receive message', msg); //메세지 내용과 이름을 클라이언트 receive message로 보내줌,  나를빼고 제외한 모든 방에있는 모든 사람한테
     });
 
-    socket.on('disconnect', (num, name) => { //접속이 해제(끊어졌을때)되는 경우에 발생하는 이벤트
+    socket.on('disconnect', () => { //접속이 해제(끊어졌을때)되는 경우에 발생하는 이벤트
         console.log('연결 끊김')
     });
 });

@@ -28,7 +28,6 @@
 
         .group_list_chatting_box {
             position: relative;
-            width: 60%;
             background-color: #eaeaea;
             border-radius: 5px;
             height: 150px;
@@ -124,6 +123,74 @@
             margin-right: 5px;
             font-weight: bold;
         }
+
+        .prj_room_password_box_bgk {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 999;
+            display: none;
+        }
+
+        .prj_room_pwd_big_white_box {
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .prj_pwd_white_box {
+            width: 500px;
+            padding: 15px 15px 15px;
+            background-color: white;
+            margin: auto;
+            position: relative;
+            border-radius: 5px;
+        }
+
+        .pwd_input_box input {
+            width: 90%;
+            padding: 10px 10px 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            border: 1px solid #cccccc;
+        }
+
+        .pwd_btn_box {
+            margin-top: 20px
+        }
+
+        .pwd_btn_box button {
+            background-color: #4169E1;
+            border-radius: 5px;
+            border: none;
+            color: white;
+            padding: 10x 10px 10px;
+            width: 80px;
+            height: 30px;
+        }
+
+        .group_close_box {
+            color: black;
+            text-align: right;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .group_close_box h3 {
+            width: 30px;
+            float: right;
+            text-align: center;
+            margin-top: -10px;
+        }
+
+        .group_close_box:hover {
+            color: #4169E1;
+        }
     </style>
 </head>
 
@@ -139,7 +206,26 @@
                 } else {
                     let post = rows[i]
             %>
-            <div class="big_group_list_chat_box" onclick="location.href='/dinnoplus/group/list/<%= post.id %>'">
+            <div class="big_group_list_chat_box">
+                <div class="prj_room_password_box_bgk">
+                    <div class="prj_room_pwd_big_white_box">
+                        <div class="prj_pwd_white_box">
+                            <div class="in_white_box">
+                                <div class="group_close_box">
+                                    <h3>X</h3>
+                                </div>
+                                <form action="/dinnoplus/group/list/popup_pwd/<%= post.id %>" method="POST">
+                                    <div class="pwd_input_box">
+                                        <input type="password" name="group_pwd" required placeholder="방 비밀번호를 입력하세요.">
+                                    </div>
+                                    <div class="pwd_btn_box">
+                                        <button>확인</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="group_list_chatting_box">
                     <p class="project_name">프로젝트: <%= post.project_name %></p>
                     <div class="pr_pm">
@@ -189,14 +275,18 @@
     </div>
 </body>
 <script>
-    const big_big_group_list_chat_box = document.querySelectorAll(".project_group_list_box .big_group_list_chat_box");
+    const big_big_group_list_chat_box = document.querySelectorAll(".group_list_chatting_box");
+    const prj_room_password_box_bgk = document.querySelectorAll(".prj_room_password_box_bgk");
+    const group_close_box = document.querySelectorAll(".group_close_box");
 
     for (let i = 0; i < big_big_group_list_chat_box.length; i++) {
         big_big_group_list_chat_box[i].addEventListener('click', () => {
-
+            prj_room_password_box_bgk[i].style.display = "table";
+        });
+        group_close_box[i].addEventListener('click', () => {
+            prj_room_password_box_bgk[i].style.display = "none";
         })
     }
-
 </script>
 
 </html>
